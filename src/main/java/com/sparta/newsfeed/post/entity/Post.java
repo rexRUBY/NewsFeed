@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class Post extends Timestamped {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,14 +26,21 @@ public class Post extends Timestamped {
     @Column(name = "contents")
     private String contents;
 
-    @Column(name = "like")
+    @Column(name="like")
     private Long like;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likeList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
 
+    public Long countLikes(){
+        this.like = (long) this.likeList.size();
+        return this.like;
+    }
 
     public Post(String contents, String imgUrl,User user) {
         this.contents = contents;
