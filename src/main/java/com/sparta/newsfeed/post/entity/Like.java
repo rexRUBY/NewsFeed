@@ -21,8 +21,18 @@ public class Like {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
     public Like(User user, Post post) {
         this.user=user;
         this.post=post;
+    }
+
+    public Like(User user, Post post, Comment comment) {
+        this.user=user;
+        this.post=post;
+        this.comment=comment;
     }
 }

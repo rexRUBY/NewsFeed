@@ -1,7 +1,7 @@
 package com.sparta.newsfeed.post.service;
 
-import com.sparta.newsfeed.post.dto.PostRequestDto;
-import com.sparta.newsfeed.post.dto.PostResponseDto;
+import com.sparta.newsfeed.post.dto.postDto.PostRequestDto;
+import com.sparta.newsfeed.post.dto.postDto.PostResponseDto;
 import com.sparta.newsfeed.post.entity.Like;
 import com.sparta.newsfeed.post.entity.Post;
 import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
@@ -100,6 +100,15 @@ public class PostService {
     public PostResponseDto likePost(Long id, HttpServletRequest res) {
         User user = findUser(res);
         Post post = postRepository.findById(id).orElseThrow(NullPointerException::new);
+        List<Like> checkLike = likeRepository.findByPost(post);
+        for(Like l : checkLike){
+            if(l.getUser().equals(user)){
+                throw new AuthorizedCheckException("already liked it");
+            }
+        }
+        if(post.getUser().equals(user)){
+            throw new RuntimeException("not allowed to like yourself");
+        }
         Like like = new Like(user,post);
         likeRepository.save(like);
 
@@ -147,5 +156,16 @@ public class PostService {
         Page<Post> posts = postRepository.findByCreatedAtBetween(startDate, endDate, pageable);
 
         return posts.map(PostResponseDto::new);
+    }
+
+    public void deleteLike(Long postsid,Long likeid, HttpServletRequest res) {
+        User user = findUser(res);
+        Post post = postRepository.findById(postsid).orElseThrow(NullPointerException::new);
+        Like like = likeRepository.findById(likeid).orElseThrow(NullPointerException::new);
+        if(like.getPost().equals(post)&&like.getPost().getUser().equals(user)){
+            postRepository.delete(post);
+        }else{
+            throw new AuthorizedCheckException("not allowed");
+        }
     }
 }

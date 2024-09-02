@@ -1,14 +1,11 @@
 package com.sparta.newsfeed.post.controller;
 
-import com.sparta.newsfeed.post.dto.PostRequestDto;
-import com.sparta.newsfeed.post.dto.PostResponseDto;
-import com.sparta.newsfeed.post.fix.User;
+import com.sparta.newsfeed.post.dto.postDto.PostRequestDto;
+import com.sparta.newsfeed.post.dto.postDto.PostResponseDto;
 import com.sparta.newsfeed.post.fix.UserRepository;
 import com.sparta.newsfeed.post.jwt.JwtUtil;
 import com.sparta.newsfeed.post.service.PostService;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -42,6 +39,13 @@ public class PostController {
     @PostMapping("/posts/{id}/like")
     public ResponseEntity<PostResponseDto> likePost(@RequestParam Long id,HttpServletRequest res){
         return ResponseEntity.ok(postService.likePost(id,res));
+    }
+
+    @DeleteMapping("/posts/{postsid}/like/{likeid}")
+    public void deleteLike(@RequestParam Long postsid,
+                           @RequestParam Long likeid,
+                           HttpServletRequest res){
+        postService.deleteLike(postsid,likeid,res);
     }
 
     @GetMapping("/posts")
