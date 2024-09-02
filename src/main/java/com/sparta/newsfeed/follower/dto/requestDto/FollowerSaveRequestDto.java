@@ -1,11 +1,11 @@
 package com.sparta.newsfeed.follower.dto.requestDto;
 
-import ch.qos.logback.core.status.Status;
+import com.sparta.newsfeed.follower.entity.User;
 import lombok.Getter;
 
 @Getter
 public class FollowerSaveRequestDto {
 
-    private User follower;
-    private User user;
+    private Long followerId;
+    private Long userId;
 }

@@ -15,13 +15,13 @@ public class FollowerController {
 
     // post - 친구 추가
     @PostMapping("/users/followers")
-    public ResponseEntity<FollowerSaveResponseDto> addFollower(@RequestBody FollowerSaveRequestDto followerSaveRequestDto) {
+    public ResponseEntity<FollowerSaveResponseDto> saveFollower(@RequestBody FollowerSaveRequestDto followerSaveRequestDto) {
         return ResponseEntity.ok(followerService.saveFollower(followerSaveRequestDto));
     }
 
     // delete - 친구 삭제
-    @DeleteMapping("/users/followers/{followerId}")
-    public void deleteFollower(@PathVariable User follower) {
-        followerService.deleteFollower(follower);
+    @DeleteMapping("/users/{userId}/followers/{followerId}")
+    public void deleteFollower(@PathVariable Long followerId, @PathVariable Long userId) {
+        followerService.deleteFollower(followerId, userId);
     }
 }
