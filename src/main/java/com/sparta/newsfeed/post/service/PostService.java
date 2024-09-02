@@ -34,7 +34,7 @@ public class PostService {
     private final LikeRepository likeRepository;
 
     //jwt에서 유저이메일로 유저 찾기
-    public User findUser(HttpServletRequest res){
+    public User findUser(HttpServletRequest res) {
         Claims authCheck = jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
         User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(() -> new NullPointerException("유저가 없습니다."));
         return user;
@@ -53,45 +53,47 @@ public class PostService {
     public List<PostResponseDto> getPostList() {
         List<Post> postList = postRepository.findAll();
         List<PostResponseDto> dtoList = new ArrayList<>();
-        for(Post p : postList){
+        for (Post p : postList) {
             PostResponseDto dto = new PostResponseDto(p);
             dtoList.add(dto);
         }
-        return  dtoList;
+        return dtoList;
     }
+
     @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto postRequestDto, HttpServletRequest res) {
         User user = findUser(res);
         Post post = postRepository.findById(id).orElseThrow(NullPointerException::new);
-        if(post.getUser().equals(user)){
+        if (post.getUser().equals(user)) {
             post.update(postRequestDto.getContents(),
                     postRequestDto.getImgUrl());
-        }else{
+        } else {
             throw new AuthorizedCheckException("not allowed");
         }
         return new PostResponseDto(post);
     }
+
     @Transactional
     public void deletePost(Long id, HttpServletRequest res) {
         User user = findUser(res);
         Post post = postRepository.findById(id).orElseThrow(NullPointerException::new);
-        if(post.getUser().equals(user)){
+        if (post.getUser().equals(user)) {
             postRepository.delete(post);
-        }else{
+        } else {
             throw new AuthorizedCheckException("not allowed");
         }
     }
 
-    public Page<PostResponseDto> getPost(int page, int size,HttpServletRequest res) {
+    public Page<PostResponseDto> getPost(int page, int size, HttpServletRequest res) {
         User user = findUser(res);
         List<Follower> followerList = user.getFollower();
         List<User> userList = new ArrayList<>();
-        for(Follower f:followerList){
+        for (Follower f : followerList) {
             userList.add(f.getFollower());
         }
         userList.add(user);
-        Pageable pageable = PageRequest.of(page-1,size);
-        Page<Post> posts = postRepository.findByUserOrderByCreatedAtDesc(userList,pageable);
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Post> posts = postRepository.findByUserOrderByCreatedAtDesc(userList, pageable);
 
         return posts.map(PostResponseDto::new);
     }
@@ -101,44 +103,46 @@ public class PostService {
         User user = findUser(res);
         Post post = postRepository.findById(id).orElseThrow(NullPointerException::new);
         List<Like> checkLike = likeRepository.findByPost(post);
-        for(Like l : checkLike){
-            if(l.getUser().equals(user)){
+        for (Like l : checkLike) {
+            if (l.getUser().equals(user)) {
                 throw new AuthorizedCheckException("already liked it");
             }
         }
-        if(post.getUser().equals(user)){
+        if (post.getUser().equals(user)) {
             throw new RuntimeException("not allowed to like yourself");
         }
-        Like like = new Like(user,post);
+        Like like = new Like(user, post);
         likeRepository.save(like);
 
         return new PostResponseDto(post);
     }
+
     //수정일 기준으로 페이지네이션
     public Page<PostResponseDto> getPostByModifiedAt(int page, int size, HttpServletRequest res) {
         User user = findUser(res);
         List<Follower> followerList = user.getFollower();
         List<User> userList = new ArrayList<>();
-        for(Follower f:followerList){
+        for (Follower f : followerList) {
             userList.add(f.getFollower());
         }
         userList.add(user);
-        Pageable pageable = PageRequest.of(page-1,size);
-        Page<Post> posts = postRepository.findByUserOrderByModifiedAtDesc(userList,pageable);
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Post> posts = postRepository.findByUserOrderByModifiedAtDesc(userList, pageable);
 
         return posts.map(PostResponseDto::new);
     }
+
     //like 수대로 페이지네이션
     public Page<PostResponseDto> getPostByLike(int page, int size, HttpServletRequest res) {
         User user = findUser(res);
         List<Follower> followerList = user.getFollower();
         List<User> userList = new ArrayList<>();
-        for(Follower f:followerList){
+        for (Follower f : followerList) {
             userList.add(f.getFollower());
         }
         userList.add(user);
-        Pageable pageable = PageRequest.of(page-1,size);
-        Page<Post> posts = postRepository.findByUserOrderByLikeDesc(userList,pageable);
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Post> posts = postRepository.findByUserOrderByLikeDesc(userList, pageable);
 
         return posts.map(PostResponseDto::new);
     }
@@ -148,23 +152,23 @@ public class PostService {
         User user = findUser(res);
         List<Follower> followerList = user.getFollower();
         List<User> userList = new ArrayList<>();
-        for(Follower f:followerList){
+        for (Follower f : followerList) {
             userList.add(f.getFollower());
         }
         userList.add(user);
-        Pageable pageable = PageRequest.of(page-1,size);
+        Pageable pageable = PageRequest.of(page - 1, size);
         Page<Post> posts = postRepository.findByCreatedAtBetween(startDate, endDate, pageable);
 
         return posts.map(PostResponseDto::new);
     }
 
-    public void deleteLike(Long postsid,Long likeid, HttpServletRequest res) {
+    public void deleteLike(Long postsid, Long likeid, HttpServletRequest res) {
         User user = findUser(res);
         Post post = postRepository.findById(postsid).orElseThrow(NullPointerException::new);
         Like like = likeRepository.findById(likeid).orElseThrow(NullPointerException::new);
-        if(like.getPost().equals(post)&&like.getPost().getUser().equals(user)){
+        if (like.getPost().equals(post) && like.getPost().getUser().equals(user)) {
             postRepository.delete(post);
-        }else{
+        } else {
             throw new AuthorizedCheckException("not allowed");
         }
     }

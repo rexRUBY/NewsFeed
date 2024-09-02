@@ -32,67 +32,67 @@ public class PostController {
 
     @PostMapping("/posts")
     public ResponseEntity<PostResponseDto> savePost(@RequestBody PostRequestDto postRequestDto,
-                                                    HttpServletRequest res){
+                                                    HttpServletRequest res) {
         return ResponseEntity.ok(postService.savePost(postRequestDto, res));
     }
 
     @PostMapping("/posts/{id}/like")
-    public ResponseEntity<PostResponseDto> likePost(@RequestParam Long id,HttpServletRequest res){
-        return ResponseEntity.ok(postService.likePost(id,res));
+    public ResponseEntity<PostResponseDto> likePost(@PathVariable Long id, HttpServletRequest res) {
+        return ResponseEntity.ok(postService.likePost(id, res));
     }
 
     @DeleteMapping("/posts/{postsid}/like/{likeid}")
-    public void deleteLike(@RequestParam Long postsid,
-                           @RequestParam Long likeid,
-                           HttpServletRequest res){
-        postService.deleteLike(postsid,likeid,res);
+    public void deleteLike(@PathVariable Long postsid,
+                           @PathVariable Long likeid,
+                           HttpServletRequest res) {
+        postService.deleteLike(postsid, likeid, res);
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<List<PostResponseDto>> getPostList(){
+    public ResponseEntity<List<PostResponseDto>> getPostList() {
         return ResponseEntity.ok(postService.getPostList());
     }
 
     @GetMapping("/posts/news")
-    public ResponseEntity<Page<PostResponseDto>> getPost(@RequestParam(defaultValue = "1")int page,
-                                                         @RequestParam(defaultValue = "10")int size,
-                                                         HttpServletRequest res){
-        return ResponseEntity.ok(postService.getPost(page,size,res));
+    public ResponseEntity<Page<PostResponseDto>> getPost(@RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(defaultValue = "10") int size,
+                                                         HttpServletRequest res) {
+        return ResponseEntity.ok(postService.getPost(page, size, res));
     }
 
     @GetMapping("/posts/news/modified")
-    public ResponseEntity<Page<PostResponseDto>> getPostByModifiedAt(@RequestParam(defaultValue = "1")int page,
-                                                         @RequestParam(defaultValue = "10")int size,
-                                                         HttpServletRequest res){
-        return ResponseEntity.ok(postService.getPostByModifiedAt(page,size,res));
+    public ResponseEntity<Page<PostResponseDto>> getPostByModifiedAt(@RequestParam(defaultValue = "1") int page,
+                                                                     @RequestParam(defaultValue = "10") int size,
+                                                                     HttpServletRequest res) {
+        return ResponseEntity.ok(postService.getPostByModifiedAt(page, size, res));
     }
 
     @GetMapping("/posts/news/like")
-    public ResponseEntity<Page<PostResponseDto>> getPostByLike(@RequestParam(defaultValue = "1")int page,
-                                                         @RequestParam(defaultValue = "10")int size,
-                                                         HttpServletRequest res){
-        return ResponseEntity.ok(postService.getPostByLike(page,size,res));
+    public ResponseEntity<Page<PostResponseDto>> getPostByLike(@RequestParam(defaultValue = "1") int page,
+                                                               @RequestParam(defaultValue = "10") int size,
+                                                               HttpServletRequest res) {
+        return ResponseEntity.ok(postService.getPostByLike(page, size, res));
     }
 
     @GetMapping("/posts/news/search")
-    public ResponseEntity<Page<PostResponseDto>> getPostByTime(@RequestParam(defaultValue = "1")int page,
-                                                               @RequestParam(defaultValue = "10")int size,
+    public ResponseEntity<Page<PostResponseDto>> getPostByTime(@RequestParam(defaultValue = "1") int page,
+                                                               @RequestParam(defaultValue = "10") int size,
                                                                @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                                @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                                                               HttpServletRequest res){
-        return ResponseEntity.ok(postService.getPostByTime(startDate,endDate,page,size,res));
+                                                               HttpServletRequest res) {
+        return ResponseEntity.ok(postService.getPostByTime(startDate, endDate, page, size, res));
     }
 
 
     @PutMapping("/posts/{id}")
     public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id,
-                                                     @RequestBody PostRequestDto postRequestDto,
-                                                     HttpServletRequest res){
-        return ResponseEntity.ok(postService.updatePost(id,postRequestDto,res));
+                                                      @RequestBody PostRequestDto postRequestDto,
+                                                      HttpServletRequest res) {
+        return ResponseEntity.ok(postService.updatePost(id, postRequestDto, res));
     }
 
     @DeleteMapping("/posts/{id}")
-    public void deletePost(@PathVariable Long id, HttpServletRequest res){
+    public void deletePost(@PathVariable Long id, HttpServletRequest res) {
         postService.deletePost(id, res);
     }
 

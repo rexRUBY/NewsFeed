@@ -20,12 +20,12 @@ public class CommentController extends Timestamped {
     @PostMapping("/{postsId}/comments")
     public ResponseEntity<CommentResponseDto> saveComments(@PathVariable Long postsId,
                                                            @RequestBody CommentRequestDto commentRequestDto,
-                                                           HttpServletRequest res){
-        return ResponseEntity.ok(commentService.saveComments(postsId,commentRequestDto,res));
+                                                           HttpServletRequest res) {
+        return ResponseEntity.ok(commentService.saveComments(postsId, commentRequestDto, res));
     }
 
     @GetMapping("/{postsId}/comments")
-    public ResponseEntity<List<CommentResponseDto>> getCommentList(@PathVariable Long postsId){
+    public ResponseEntity<List<CommentResponseDto>> getCommentList(@PathVariable Long postsId) {
         return ResponseEntity.ok(commentService.getCommentList(postsId));
     }
 
@@ -33,29 +33,29 @@ public class CommentController extends Timestamped {
     public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long postsId,
                                                             @PathVariable Long commentsId,
                                                             @RequestBody CommentRequestDto commentRequestDto,
-                                                            HttpServletRequest res){
-        return ResponseEntity.ok(commentService.updateComment(postsId,commentsId,commentRequestDto,res));
+                                                            HttpServletRequest res) {
+        return ResponseEntity.ok(commentService.updateComment(postsId, commentsId, commentRequestDto, res));
     }
 
     @DeleteMapping("/{postsId}/comments/{commentsId}")
     public void deleteComment(@PathVariable Long postsId,
                               @PathVariable Long commentsId,
-                              HttpServletRequest res){
-        commentService.deleteComment(postsId,commentsId,res);
+                              HttpServletRequest res) {
+        commentService.deleteComment(postsId, commentsId, res);
     }
 
-    @PostMapping("/{postsId}/comments/{commentsId}/likse")
+    @PostMapping("/{postsId}/comments/{commentsId}/likes")
     public ResponseEntity<CommentResponseDto> likeComment(@PathVariable Long postsId,
                                                           @PathVariable Long commentsId,
-                                                          HttpServletRequest res){
-        return ResponseEntity.ok(commentService.likeComment(postsId,commentsId,res));
+                                                          HttpServletRequest res) {
+        return ResponseEntity.ok(commentService.likeComment(postsId, commentsId, res));
     }
 
     @DeleteMapping("/{postsId}/comments/{commentsId}/likes/{likesId}")
     public void deleteLikeComment(@PathVariable Long postsId,
                                   @PathVariable Long commentsId,
                                   @PathVariable Long likesId,
-                                  HttpServletRequest res){
-        commentService.deleteLikeComment(postsId,commentsId,likesId,res);
+                                  HttpServletRequest res) {
+        commentService.deleteLikeComment(postsId, commentsId, likesId, res);
     }
 }

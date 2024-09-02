@@ -26,13 +26,13 @@ public class Like {
     private Comment comment;
 
     public Like(User user, Post post) {
-        this.user=user;
-        this.post=post;
+        this.user = user;
+        this.post = post;
     }
 
     public Like(User user, Post post, Comment comment) {
-        this.user=user;
-        this.post=post;
-        this.comment=comment;
+        this.user = user;
+        this.post = post;
+        this.comment = comment;
     }
 }

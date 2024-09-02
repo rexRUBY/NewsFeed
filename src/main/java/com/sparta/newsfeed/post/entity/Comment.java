@@ -29,24 +29,24 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(name="like")
+    @Column(name = "like")
     private Long like;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likeList = new ArrayList<>();
 
-    public Long countLikes(){
+    public Long countLikes() {
         this.like = (long) this.likeList.size();
         return this.like;
     }
 
     public Comment(String commentContents, Post post, User user) {
         this.commentContents = commentContents;
-        this.post=post;
-        this.user=user;
+        this.post = post;
+        this.user = user;
     }
 
     public void update(String commentContents) {
-        this.commentContents=commentContents;
+        this.commentContents = commentContents;
     }
 }

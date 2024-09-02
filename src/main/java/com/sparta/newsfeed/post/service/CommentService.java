@@ -13,7 +13,6 @@ import com.sparta.newsfeed.post.repository.CommentRepository;
 import com.sparta.newsfeed.post.repository.LikeRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
 import io.jsonwebtoken.Claims;
-import jakarta.persistence.Table;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,21 +32,23 @@ public class CommentService {
     private final LikeRepository likeRepository;
 
     //jwt에서 유저이메일로 유저 찾기
-    public User findUser(HttpServletRequest res){
+    public User findUser(HttpServletRequest res) {
         Claims authCheck = jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
         User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(() -> new NullPointerException("유저가 없습니다."));
         return user;
     }
+
     //id로 post찾기
-    public Post findPost(Long postsId){
+    public Post findPost(Long postsId) {
         Post post = postRepository.findById(postsId).orElseThrow(NullPointerException::new);
         return post;
     }
+
     @Transactional
     public CommentResponseDto saveComments(Long postsId, CommentRequestDto commentRequestDto, HttpServletRequest res) {
         Post post = findPost(postsId);
         User user = findUser(res);
-        Comment comment = new Comment(commentRequestDto.getCommentContents(),post,user);
+        Comment comment = new Comment(commentRequestDto.getCommentContents(), post, user);
         Comment savedComment = commentRepository.save(comment);
         return new CommentResponseDto(savedComment);
     }
@@ -56,21 +57,22 @@ public class CommentService {
         Post post = findPost(postsId);
         List<Comment> commentList = post.getCommentList();
         List<CommentResponseDto> dtoList = new ArrayList<>();
-        for(Comment c: commentList){
+        for (Comment c : commentList) {
             CommentResponseDto dto = new CommentResponseDto(c);
             dtoList.add(dto);
         }
         return dtoList;
     }
+
     @Transactional
     public CommentResponseDto updateComment(Long postsId, Long commentsId, CommentRequestDto commentRequestDto, HttpServletRequest res) {
         Post post = findPost(postsId);
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
         User user = findUser(res);
 
-        if(comment.getPost().equals(post)||comment.getUser().equals(user)){
+        if (comment.getPost().equals(post) || comment.getUser().equals(user)) {
             comment.update(commentRequestDto.getCommentContents());
-        }else {
+        } else {
             throw new AuthorizedCheckException("not allowed");
         }
         return new CommentResponseDto(comment);
@@ -82,9 +84,9 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
         User user = findUser(res);
 
-        if(comment.getPost().getUser().equals(post.getUser())||comment.getUser().equals(user)){
+        if (comment.getPost().getUser().equals(post.getUser()) || comment.getUser().equals(user)) {
             commentRepository.delete(comment);
-        }else {
+        } else {
             throw new AuthorizedCheckException("not allowed");
         }
     }
@@ -94,18 +96,18 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
         User user = findUser(res);
         List<Like> checkLike = likeRepository.findByComment(comment);
-        if(!comment.getPost().equals(post)){
+        if (!comment.getPost().equals(post)) {
             throw new NullPointerException("wrong input");
         }
-        for(Like l : checkLike){
-            if(l.getUser().equals(user)){
+        for (Like l : checkLike) {
+            if (l.getUser().equals(user)) {
                 throw new AuthorizedCheckException("already liked it");
             }
         }
-        if(comment.getUser().equals(user)){
+        if (comment.getUser().equals(user)) {
             throw new RuntimeException("not allowed to like yourself");
         }
-        Like like = new Like(user,post,comment);
+        Like like = new Like(user, post, comment);
         likeRepository.save(like);
         return new CommentResponseDto(comment);
     }
@@ -115,12 +117,12 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
         User user = findUser(res);
         Like like = likeRepository.findById(likesId).orElseThrow(NullPointerException::new);
-        if(!like.getComment().equals(comment)||!like.getComment().getPost().equals(post)){
+        if (!like.getComment().equals(comment) || !like.getComment().getPost().equals(post)) {
             throw new NullPointerException("wrong input");
         }
-        if(like.getUser().equals(user)){
+        if (like.getUser().equals(user)) {
             likeRepository.delete(like);
-        }else {
+        } else {
             throw new AuthorizedCheckException("not allowed");
         }
 

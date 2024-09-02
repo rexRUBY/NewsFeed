@@ -7,7 +7,7 @@ import lombok.Getter;
 public class CommentResponseDto {
     private final String commentContents;
 
-    public CommentResponseDto(Comment comment){
+    public CommentResponseDto(Comment comment) {
         this.commentContents = comment.getCommentContents();
     }
 }
