@@ -5,8 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice // 모든 컨트롤러에서 발생하는 예외를 처리하기 위한 설정
+@RestControllerAdvice // 모든 컨트롤러에서 발생하는 예외를 처리하기 위한 설정
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class) // UnauthorizedException 발생 시 처리

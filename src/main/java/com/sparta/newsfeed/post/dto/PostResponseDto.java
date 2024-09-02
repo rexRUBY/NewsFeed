@@ -1,6 +1,6 @@
 package com.sparta.newsfeed.post.dto;
 
-import com.sparta.newspeed.post.entity.Post;
+import com.sparta.newsfeed.post.entity.Post;
 import lombok.Getter;
 
 @Getter
@@ -16,4 +16,6 @@ public class PostResponseDto {
         this.imgUrl = post.getImgUrl();
         this.contents = post.getContents();
     }
+
+
 }

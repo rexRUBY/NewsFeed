@@ -1,8 +1,7 @@
 package com.sparta.newsfeed.post.jwt;
 
-import com.sparta.upgradeschedule.entity.UserRoleEnum;
-import com.sparta.upgradeschedule.exception.TokenMissingException;
-import com.sparta.upgradeschedule.exception.UnauthorizedException;
+import com.sparta.newsfeed.post.exception.TokenMissingException;
+import com.sparta.newsfeed.post.exception.UnauthorizedException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -20,7 +19,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
-import java.util.Date;
 
 @Component
 public class JwtUtil {
@@ -55,7 +53,7 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String email, UserRoleEnum role) {
+    /*public String createToken(String email, UserRoleEnum role) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -66,7 +64,7 @@ public class JwtUtil {
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
-    }
+    }*/
 
     // JWT Cookie 에 저장
     public void addJwtToCookie(String token, HttpServletResponse res) {
@@ -98,13 +96,13 @@ public class JwtUtil {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            logger.error("Invalid JWT signature");
         } catch (UnauthorizedException e) {
-            logger.error("Expired JWT token, 만료된 JWT token 입니다.");
+            logger.error("Expired JWT token");
         } catch (UnsupportedJwtException e) {
-            logger.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            logger.error("Unsupported JWT token");
         } catch (TokenMissingException e) {
-            logger.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            logger.error("JWT claims is empty");
         }
         return false;
     }
