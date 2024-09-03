@@ -94,7 +94,7 @@ public class PostService {
         }
         userList.add(user);
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Post> posts = postRepository.findByUserOrderByCreatedAtDesc(userList, pageable);
+        Page<Post> posts = postRepository.findByUserInOrderByCreatedAtDesc(userList, pageable);
 
         return posts.map(PostResponseDto::new);
     }
@@ -128,7 +128,7 @@ public class PostService {
         }
         userList.add(user);
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Post> posts = postRepository.findByUserOrderByModifiedAtDesc(userList, pageable);
+        Page<Post> posts = postRepository.findByUserInOrderByModifiedAtDesc(userList, pageable);
 
         return posts.map(PostResponseDto::new);
     }
@@ -143,7 +143,7 @@ public class PostService {
         }
         userList.add(user);
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Post> posts = postRepository.findByUserOrderByLikeDesc(userList, pageable);
+        Page<Post> posts = postRepository.findByUserInOrderByLikeDesc(userList, pageable);
 
         return posts.map(PostResponseDto::new);
     }

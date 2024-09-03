@@ -4,8 +4,6 @@ import com.sparta.newsfeed.post.dto.postDto.PostRequestDto;
 import com.sparta.newsfeed.post.dto.postDto.PostResponseDto;
 import com.sparta.newsfeed.post.fix.Auth;
 import com.sparta.newsfeed.post.fix.AuthUser;
-import com.sparta.newsfeed.post.fix.UserRepository;
-import com.sparta.newsfeed.post.jwt.JwtUtil;
 import com.sparta.newsfeed.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,9 +19,6 @@ import java.util.List;
 @RequestMapping("/users")
 public class PostController {
     private final PostService postService;
-    private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
-
 
     @PostMapping("/posts")
     public ResponseEntity<PostResponseDto> savePost(@RequestBody PostRequestDto postRequestDto,
