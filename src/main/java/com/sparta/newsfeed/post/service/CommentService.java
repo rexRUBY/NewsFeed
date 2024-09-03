@@ -8,12 +8,9 @@ import com.sparta.newsfeed.post.entity.Post;
 import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
 import com.sparta.newsfeed.post.fix.User;
 import com.sparta.newsfeed.post.fix.UserRepository;
-import com.sparta.newsfeed.post.jwt.JwtUtil;
 import com.sparta.newsfeed.post.repository.CommentRepository;
 import com.sparta.newsfeed.post.repository.LikeRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,15 +25,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
     private final LikeRepository likeRepository;
 
-    //jwt에서 유저이메일로 유저 찾기
-    public User findUser(HttpServletRequest res) {
-        Claims authCheck = jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
-        User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(() -> new NullPointerException("유저가 없습니다."));
-        return user;
-    }
 
     //id로 post찾기
     public Post findPost(Long postsId) {
@@ -44,10 +34,16 @@ public class CommentService {
         return post;
     }
 
+    //id로 유저찾기
+    public User findUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(NullPointerException::new);
+        return user;
+    }
+
     @Transactional
-    public CommentResponseDto saveComments(Long postsId, CommentRequestDto commentRequestDto, HttpServletRequest res) {
+    public CommentResponseDto saveComments(Long postsId, CommentRequestDto commentRequestDto, Long userId) {
         Post post = findPost(postsId);
-        User user = findUser(res);
+        User user = findUser(userId);
         Comment comment = new Comment(commentRequestDto.getCommentContents(), post, user);
         Comment savedComment = commentRepository.save(comment);
         return new CommentResponseDto(savedComment);
@@ -65,10 +61,10 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto updateComment(Long postsId, Long commentsId, CommentRequestDto commentRequestDto, HttpServletRequest res) {
+    public CommentResponseDto updateComment(Long postsId, Long commentsId, CommentRequestDto commentRequestDto, Long userId) {
         Post post = findPost(postsId);
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
-        User user = findUser(res);
+        User user = findUser(userId);
 
         if (comment.getPost().equals(post) || comment.getUser().equals(user)) {
             comment.update(commentRequestDto.getCommentContents());
@@ -79,10 +75,10 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long postsId, Long commentsId, HttpServletRequest res) {
+    public void deleteComment(Long postsId, Long commentsId, Long userId) {
         Post post = findPost(postsId);
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
-        User user = findUser(res);
+        User user = findUser(userId);
 
         if (comment.getPost().getUser().equals(post.getUser()) || comment.getUser().equals(user)) {
             commentRepository.delete(comment);
@@ -91,10 +87,10 @@ public class CommentService {
         }
     }
 
-    public CommentResponseDto likeComment(Long postsId, Long commentsId, HttpServletRequest res) {
+    public CommentResponseDto likeComment(Long postsId, Long commentsId, Long userId) {
         Post post = findPost(postsId);
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
-        User user = findUser(res);
+        User user = findUser(userId);
         List<Like> checkLike = likeRepository.findByComment(comment);
         if (!comment.getPost().equals(post)) {
             throw new NullPointerException("wrong input");
@@ -112,10 +108,10 @@ public class CommentService {
         return new CommentResponseDto(comment);
     }
 
-    public void deleteLikeComment(Long postsId, Long commentsId, Long likesId, HttpServletRequest res) {
+    public void deleteLikeComment(Long postsId, Long commentsId, Long likesId, Long userId) {
         Post post = findPost(postsId);
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
-        User user = findUser(res);
+        User user = findUser(userId);
         Like like = likeRepository.findById(likesId).orElseThrow(NullPointerException::new);
         if (!like.getComment().equals(comment) || !like.getComment().getPost().equals(post)) {
             throw new NullPointerException("wrong input");

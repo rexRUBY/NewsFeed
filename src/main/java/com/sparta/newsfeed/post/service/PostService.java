@@ -8,11 +8,8 @@ import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
 import com.sparta.newsfeed.post.fix.Follower;
 import com.sparta.newsfeed.post.fix.User;
 import com.sparta.newsfeed.post.fix.UserRepository;
-import com.sparta.newsfeed.post.jwt.JwtUtil;
 import com.sparta.newsfeed.post.repository.LikeRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,19 +27,23 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
     private final LikeRepository likeRepository;
 
-    //jwt에서 유저이메일로 유저 찾기
-    public User findUser(HttpServletRequest res) {
-        Claims authCheck = jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
-        User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(() -> new NullPointerException("유저가 없습니다."));
+    //id로 post찾기
+    public Post findPost(Long postsId) {
+        Post post = postRepository.findById(postsId).orElseThrow(NullPointerException::new);
+        return post;
+    }
+
+    //id로 유저찾기
+    public User findUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(NullPointerException::new);
         return user;
     }
 
     @Transactional
-    public PostResponseDto savePost(PostRequestDto postRequestDto, HttpServletRequest res) {
-        User user = findUser(res);
+    public PostResponseDto savePost(PostRequestDto postRequestDto, Long userId) {
+        User user = findUser(userId);
         Post post = new Post(postRequestDto.getContents(),
                 postRequestDto.getImgUrl(),
                 user);
@@ -61,9 +62,9 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto updatePost(Long id, PostRequestDto postRequestDto, HttpServletRequest res) {
-        User user = findUser(res);
-        Post post = postRepository.findById(id).orElseThrow(NullPointerException::new);
+    public PostResponseDto updatePost(Long id, PostRequestDto postRequestDto, Long userId) {
+        User user = findUser(userId);
+        Post post = findPost(id);
         if (post.getUser().equals(user)) {
             post.update(postRequestDto.getContents(),
                     postRequestDto.getImgUrl());
@@ -74,9 +75,9 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long id, HttpServletRequest res) {
-        User user = findUser(res);
-        Post post = postRepository.findById(id).orElseThrow(NullPointerException::new);
+    public void deletePost(Long id, Long userId) {
+        User user = findUser(userId);
+        Post post = findPost(id);
         if (post.getUser().equals(user)) {
             postRepository.delete(post);
         } else {
@@ -84,8 +85,8 @@ public class PostService {
         }
     }
 
-    public Page<PostResponseDto> getPost(int page, int size, HttpServletRequest res) {
-        User user = findUser(res);
+    public Page<PostResponseDto> getPost(int page, int size, Long userId) {
+        User user = findUser(userId);
         List<Follower> followerList = user.getFollower();
         List<User> userList = new ArrayList<>();
         for (Follower f : followerList) {
@@ -99,9 +100,9 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto likePost(Long id, HttpServletRequest res) {
-        User user = findUser(res);
-        Post post = postRepository.findById(id).orElseThrow(NullPointerException::new);
+    public PostResponseDto likePost(Long id, Long userId) {
+        User user = findUser(userId);
+        Post post = findPost(id);
         List<Like> checkLike = likeRepository.findByPost(post);
         for (Like l : checkLike) {
             if (l.getUser().equals(user)) {
@@ -118,8 +119,8 @@ public class PostService {
     }
 
     //수정일 기준으로 페이지네이션
-    public Page<PostResponseDto> getPostByModifiedAt(int page, int size, HttpServletRequest res) {
-        User user = findUser(res);
+    public Page<PostResponseDto> getPostByModifiedAt(int page, int size, Long userId) {
+        User user = findUser(userId);
         List<Follower> followerList = user.getFollower();
         List<User> userList = new ArrayList<>();
         for (Follower f : followerList) {
@@ -133,8 +134,8 @@ public class PostService {
     }
 
     //like 수대로 페이지네이션
-    public Page<PostResponseDto> getPostByLike(int page, int size, HttpServletRequest res) {
-        User user = findUser(res);
+    public Page<PostResponseDto> getPostByLike(int page, int size, Long userId) {
+        User user = findUser(userId);
         List<Follower> followerList = user.getFollower();
         List<User> userList = new ArrayList<>();
         for (Follower f : followerList) {
@@ -148,8 +149,8 @@ public class PostService {
     }
 
     //날짜사이 게시물 검색
-    public Page<PostResponseDto> getPostByTime(LocalDateTime startDate, LocalDateTime endDate, int page, int size, HttpServletRequest res) {
-        User user = findUser(res);
+    public Page<PostResponseDto> getPostByTime(LocalDateTime startDate, LocalDateTime endDate, int page, int size, Long userId) {
+        User user = findUser(userId);
         List<Follower> followerList = user.getFollower();
         List<User> userList = new ArrayList<>();
         for (Follower f : followerList) {
@@ -162,9 +163,10 @@ public class PostService {
         return posts.map(PostResponseDto::new);
     }
 
-    public void deleteLike(Long postsid, Long likeid, HttpServletRequest res) {
-        User user = findUser(res);
-        Post post = postRepository.findById(postsid).orElseThrow(NullPointerException::new);
+    @Transactional
+    public void deleteLike(Long postsid, Long likeid, Long userId) {
+        User user = findUser(userId);
+        Post post = findPost(postsid);
         Like like = likeRepository.findById(likeid).orElseThrow(NullPointerException::new);
         if (like.getPost().equals(post) && like.getPost().getUser().equals(user)) {
             postRepository.delete(post);

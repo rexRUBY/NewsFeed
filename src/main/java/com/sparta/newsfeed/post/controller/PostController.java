@@ -2,10 +2,11 @@ package com.sparta.newsfeed.post.controller;
 
 import com.sparta.newsfeed.post.dto.postDto.PostRequestDto;
 import com.sparta.newsfeed.post.dto.postDto.PostResponseDto;
+import com.sparta.newsfeed.post.fix.Auth;
+import com.sparta.newsfeed.post.fix.AuthUser;
 import com.sparta.newsfeed.post.fix.UserRepository;
 import com.sparta.newsfeed.post.jwt.JwtUtil;
 import com.sparta.newsfeed.post.service.PostService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,29 +24,26 @@ public class PostController {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
-    /*//jwt에서 유저이메일로 유저 찾기
-    public User findUser(HttpServletRequest res){
-        Claims authCheck = jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
-        User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(() -> new NullPointerException("유저가 없습니다."));
-        return user;
-    }*/
 
     @PostMapping("/posts")
     public ResponseEntity<PostResponseDto> savePost(@RequestBody PostRequestDto postRequestDto,
-                                                    HttpServletRequest res) {
-        return ResponseEntity.ok(postService.savePost(postRequestDto, res));
+                                                    @Auth AuthUser authUser) {
+        Long userId = authUser.getId();
+        return ResponseEntity.ok(postService.savePost(postRequestDto, userId));
     }
 
     @PostMapping("/posts/{id}/like")
-    public ResponseEntity<PostResponseDto> likePost(@PathVariable Long id, HttpServletRequest res) {
-        return ResponseEntity.ok(postService.likePost(id, res));
+    public ResponseEntity<PostResponseDto> likePost(@PathVariable Long id, @Auth AuthUser authUser) {
+        Long userId = authUser.getId();
+        return ResponseEntity.ok(postService.likePost(id, userId));
     }
 
     @DeleteMapping("/posts/{postsid}/like/{likeid}")
     public void deleteLike(@PathVariable Long postsid,
                            @PathVariable Long likeid,
-                           HttpServletRequest res) {
-        postService.deleteLike(postsid, likeid, res);
+                           @Auth AuthUser authUser) {
+        Long userId = authUser.getId();
+        postService.deleteLike(postsid, likeid, userId);
     }
 
     @GetMapping("/posts")
@@ -56,22 +54,25 @@ public class PostController {
     @GetMapping("/posts/news")
     public ResponseEntity<Page<PostResponseDto>> getPost(@RequestParam(defaultValue = "1") int page,
                                                          @RequestParam(defaultValue = "10") int size,
-                                                         HttpServletRequest res) {
-        return ResponseEntity.ok(postService.getPost(page, size, res));
+                                                         @Auth AuthUser authUser) {
+        Long userId = authUser.getId();
+        return ResponseEntity.ok(postService.getPost(page, size, userId));
     }
 
     @GetMapping("/posts/news/modified")
     public ResponseEntity<Page<PostResponseDto>> getPostByModifiedAt(@RequestParam(defaultValue = "1") int page,
                                                                      @RequestParam(defaultValue = "10") int size,
-                                                                     HttpServletRequest res) {
-        return ResponseEntity.ok(postService.getPostByModifiedAt(page, size, res));
+                                                                     @Auth AuthUser authUser) {
+        Long userId = authUser.getId();
+        return ResponseEntity.ok(postService.getPostByModifiedAt(page, size, userId));
     }
 
     @GetMapping("/posts/news/like")
     public ResponseEntity<Page<PostResponseDto>> getPostByLike(@RequestParam(defaultValue = "1") int page,
                                                                @RequestParam(defaultValue = "10") int size,
-                                                               HttpServletRequest res) {
-        return ResponseEntity.ok(postService.getPostByLike(page, size, res));
+                                                               @Auth AuthUser authUser) {
+        Long userId = authUser.getId();
+        return ResponseEntity.ok(postService.getPostByLike(page, size, userId));
     }
 
     @GetMapping("/posts/news/search")
@@ -79,21 +80,24 @@ public class PostController {
                                                                @RequestParam(defaultValue = "10") int size,
                                                                @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                                @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                                                               HttpServletRequest res) {
-        return ResponseEntity.ok(postService.getPostByTime(startDate, endDate, page, size, res));
+                                                               @Auth AuthUser authUser) {
+        Long userId = authUser.getId();
+        return ResponseEntity.ok(postService.getPostByTime(startDate, endDate, page, size, userId));
     }
 
 
     @PutMapping("/posts/{id}")
     public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id,
                                                       @RequestBody PostRequestDto postRequestDto,
-                                                      HttpServletRequest res) {
-        return ResponseEntity.ok(postService.updatePost(id, postRequestDto, res));
+                                                      @Auth AuthUser authUser) {
+        Long userId = authUser.getId();
+        return ResponseEntity.ok(postService.updatePost(id, postRequestDto, userId));
     }
 
     @DeleteMapping("/posts/{id}")
-    public void deletePost(@PathVariable Long id, HttpServletRequest res) {
-        postService.deletePost(id, res);
+    public void deletePost(@PathVariable Long id, @Auth AuthUser authUser) {
+        Long userId = authUser.getId();
+        postService.deletePost(id, userId);
     }
 
 

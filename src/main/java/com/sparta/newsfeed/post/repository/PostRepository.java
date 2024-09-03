@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface PostRepository extends JpaRepository<Post,Long> {
+public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByUserOrderByCreatedAtDesc(List<User> userList, Pageable pageable);
+
     Page<Post> findByUserOrderByLikeDesc(List<User> userList, Pageable pageable);
 
     Page<Post> findByUserOrderByModifiedAtDesc(List<User> userList, Pageable pageable);
