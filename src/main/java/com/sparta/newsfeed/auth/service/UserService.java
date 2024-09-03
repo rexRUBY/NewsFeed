@@ -1,12 +1,13 @@
 package com.sparta.newsfeed.auth.service;
 
 import com.sparta.newsfeed.auth.config.PasswordEncoder;
+import com.sparta.newsfeed.auth.dto.AuthUser;
 import com.sparta.newsfeed.auth.dto.UserRequestDto;
 import com.sparta.newsfeed.auth.dto.UserResponseDto;
 import com.sparta.newsfeed.auth.entity.User;
 import com.sparta.newsfeed.auth.jwt.JwtUtil;
 import com.sparta.newsfeed.auth.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class UserService {
         return new UserResponseDto(userRepository.save(newUser));
     }
 
-    public UserResponseDto login(UserRequestDto requestDto, HttpServletResponse response) {
+    public String login(UserRequestDto requestDto) {
         // 사용자 확인
         User user = userRepository.findByEmail(requestDto.getEmail());
 
@@ -51,14 +52,17 @@ public class UserService {
         }
 
         // 비밀번호 확인
-        if(!passwordEncoder.matches(requestDto.getPassword(),user.getPassword())) {
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // JWT 생성 및 쿠키 저장 후 Response 객체에 추가
-        String token = jwtUtil.createToken(user.getId());
-        jwtUtil.addJwtToCookie(token,response);
+        // JWT 생성 후 반환
+        return jwtUtil.createToken(user.getId());
+    }
 
-        return new UserResponseDto(user);
+    public void withdrawal(AuthUser authUser) {
+        User user = userRepository.findById(authUser.getId())
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+        userRepository.delete(user);
     }
 }
