@@ -1,13 +1,15 @@
 package com.sparta.newsfeed.post.service;
 
+
+
+import com.sparta.newsfeed.post.fix.User;
+import com.sparta.newsfeed.post.fix.UserRepository;
 import com.sparta.newsfeed.post.dto.postDto.PostRequestDto;
 import com.sparta.newsfeed.post.dto.postDto.PostResponseDto;
 import com.sparta.newsfeed.post.entity.Like;
 import com.sparta.newsfeed.post.entity.Post;
 import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
 import com.sparta.newsfeed.post.fix.Follower;
-import com.sparta.newsfeed.post.fix.User;
-import com.sparta.newsfeed.post.fix.UserRepository;
 import com.sparta.newsfeed.post.repository.LikeRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;

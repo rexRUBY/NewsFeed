@@ -1,9 +1,8 @@
 package com.sparta.newsfeed.post.controller;
 
+import com.sparta.newsfeed.auth.dto.AuthUser;
 import com.sparta.newsfeed.post.dto.postDto.PostRequestDto;
 import com.sparta.newsfeed.post.dto.postDto.PostResponseDto;
-import com.sparta.newsfeed.post.fix.Auth;
-import com.sparta.newsfeed.post.fix.AuthUser;
 import com.sparta.newsfeed.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,13 +21,13 @@ public class PostController {
 
     @PostMapping("/posts")
     public ResponseEntity<PostResponseDto> savePost(@RequestBody PostRequestDto postRequestDto,
-                                                    @Auth AuthUser authUser) {
+                                                    AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(postService.savePost(postRequestDto, userId));
     }
 
     @PostMapping("/posts/{id}/like")
-    public ResponseEntity<PostResponseDto> likePost(@PathVariable Long id, @Auth AuthUser authUser) {
+    public ResponseEntity<PostResponseDto> likePost(@PathVariable Long id, AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(postService.likePost(id, userId));
     }
@@ -36,7 +35,7 @@ public class PostController {
     @DeleteMapping("/posts/{postsid}/like/{likeid}")
     public void deleteLike(@PathVariable Long postsid,
                            @PathVariable Long likeid,
-                           @Auth AuthUser authUser) {
+                           AuthUser authUser) {
         Long userId = authUser.getId();
         postService.deleteLike(postsid, likeid, userId);
     }
@@ -49,7 +48,7 @@ public class PostController {
     @GetMapping("/posts/news")
     public ResponseEntity<Page<PostResponseDto>> getPost(@RequestParam(defaultValue = "1") int page,
                                                          @RequestParam(defaultValue = "10") int size,
-                                                         @Auth AuthUser authUser) {
+                                                         AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(postService.getPost(page, size, userId));
     }
@@ -57,7 +56,7 @@ public class PostController {
     @GetMapping("/posts/news/modified")
     public ResponseEntity<Page<PostResponseDto>> getPostByModifiedAt(@RequestParam(defaultValue = "1") int page,
                                                                      @RequestParam(defaultValue = "10") int size,
-                                                                     @Auth AuthUser authUser) {
+                                                                     AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(postService.getPostByModifiedAt(page, size, userId));
     }
@@ -65,7 +64,7 @@ public class PostController {
     @GetMapping("/posts/news/like")
     public ResponseEntity<Page<PostResponseDto>> getPostByLike(@RequestParam(defaultValue = "1") int page,
                                                                @RequestParam(defaultValue = "10") int size,
-                                                               @Auth AuthUser authUser) {
+                                                               AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(postService.getPostByLike(page, size, userId));
     }
@@ -75,7 +74,7 @@ public class PostController {
                                                                @RequestParam(defaultValue = "10") int size,
                                                                @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                                @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                                                               @Auth AuthUser authUser) {
+                                                               AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(postService.getPostByTime(startDate, endDate, page, size, userId));
     }
@@ -84,13 +83,13 @@ public class PostController {
     @PutMapping("/posts/{id}")
     public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id,
                                                       @RequestBody PostRequestDto postRequestDto,
-                                                      @Auth AuthUser authUser) {
+                                                      AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(postService.updatePost(id, postRequestDto, userId));
     }
 
     @DeleteMapping("/posts/{id}")
-    public void deletePost(@PathVariable Long id, @Auth AuthUser authUser) {
+    public void deletePost(@PathVariable Long id, AuthUser authUser) {
         Long userId = authUser.getId();
         postService.deletePost(id, userId);
     }
