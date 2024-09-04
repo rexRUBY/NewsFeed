@@ -1,5 +1,6 @@
 package com.sparta.newsfeed.follower.entity;
 
+import com.sparta.newsfeed.auth.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,19 +25,19 @@ public class Follower { // 어떤 유저가 어떤 유저를 팔로우했는지 
 
     private boolean isFollowAbailable = true;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = false)
-//    private Status status = null; // 친구 신청 상태
-//
-//    public enum Status{ // 친구신청을 보냈을 때 상태
-//        pending,
-//        accepted,
-//        rejected
-//    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status = null; // 친구 신청 상태
+
+    public enum Status{ // 친구신청을 보냈을 때 상태
+        pending,
+        accepted
+    }
 
     public Follower(User user, User follower) {
         this.user = user;
         this.follower = follower;
+        this.status = Status.pending;
     }
 
     // 팔로워 여부

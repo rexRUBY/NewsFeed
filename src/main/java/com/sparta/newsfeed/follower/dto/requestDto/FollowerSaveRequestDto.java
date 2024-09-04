@@ -4,7 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class FollowerSaveRequestDto {
-
-    private Long followerId;
-    private Long userId;
+    private String email;
 }
