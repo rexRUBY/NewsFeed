@@ -1,5 +1,6 @@
 package com.sparta.newsfeed.post.controller;
 
+import com.sparta.newsfeed.auth.annotaion.Auth;
 import com.sparta.newsfeed.auth.dto.AuthUser;
 import com.sparta.newsfeed.post.dto.commentDto.CommentRequestDto;
 import com.sparta.newsfeed.post.dto.commentDto.CommentResponseDto;
@@ -20,7 +21,7 @@ public class CommentController extends Timestamped {
     @PostMapping("/{postsId}/comments")
     public ResponseEntity<CommentResponseDto> saveComments(@PathVariable Long postsId,
                                                            @RequestBody CommentRequestDto commentRequestDto,
-                                                           AuthUser authUser) {
+                                                           @Auth AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(commentService.saveComments(postsId, commentRequestDto, userId));
     }
@@ -34,7 +35,7 @@ public class CommentController extends Timestamped {
     public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long postsId,
                                                             @PathVariable Long commentsId,
                                                             @RequestBody CommentRequestDto commentRequestDto,
-                                                            AuthUser authUser) {
+                                                            @Auth AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(commentService.updateComment(postsId, commentsId, commentRequestDto, userId));
     }
@@ -42,7 +43,7 @@ public class CommentController extends Timestamped {
     @DeleteMapping("/{postsId}/comments/{commentsId}")
     public void deleteComment(@PathVariable Long postsId,
                               @PathVariable Long commentsId,
-                              AuthUser authUser) {
+                              @Auth AuthUser authUser) {
         Long userId = authUser.getId();
         commentService.deleteComment(postsId, commentsId, userId);
     }
@@ -50,7 +51,7 @@ public class CommentController extends Timestamped {
     @PostMapping("/{postsId}/comments/{commentsId}/likes")
     public ResponseEntity<CommentResponseDto> likeComment(@PathVariable Long postsId,
                                                           @PathVariable Long commentsId,
-                                                          AuthUser authUser) {
+                                                          @Auth AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(commentService.likeComment(postsId, commentsId, userId));
     }
@@ -59,7 +60,7 @@ public class CommentController extends Timestamped {
     public void deleteLikeComment(@PathVariable Long postsId,
                                   @PathVariable Long commentsId,
                                   @PathVariable Long likesId,
-                                  AuthUser authUser) {
+                                  @Auth AuthUser authUser) {
         Long userId = authUser.getId();
         commentService.deleteLikeComment(postsId, commentsId, likesId, userId);
     }

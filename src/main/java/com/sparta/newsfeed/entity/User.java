@@ -1,12 +1,15 @@
 package com.sparta.newsfeed.entity;
 
+import com.sparta.newsfeed.post.fix.Follower;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -42,6 +45,9 @@ public class User {
 
     @Temporal(TemporalType.DATE)
     private Date birthday;
+
+    @OneToMany(mappedBy = "follower")
+    private List<Follower> follower = new ArrayList<>();
 
     public User(String username, String password, String email) {
         this.name = username;

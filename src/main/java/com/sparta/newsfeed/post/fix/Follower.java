@@ -1,5 +1,6 @@
 package com.sparta.newsfeed.post.fix;
 
+import com.sparta.newsfeed.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

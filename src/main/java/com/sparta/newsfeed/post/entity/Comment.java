@@ -1,7 +1,7 @@
 package com.sparta.newsfeed.post.entity;
 
+import com.sparta.newsfeed.entity.User;
 import com.sparta.newsfeed.post.fix.Timestamped;
-import com.sparta.newsfeed.post.fix.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,15 +29,15 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(name = "like")
-    private Long like;
+    @Column(name = "likes")
+    private Long likes;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likeList = new ArrayList<>();
+    private List<Likes> likesList = new ArrayList<>();
 
     public Long countLikes() {
-        this.like = (long) this.likeList.size();
-        return this.like;
+        this.likes = (long) this.likesList.size();
+        return this.likes;
     }
 
     public Comment(String commentContents, Post post, User user) {

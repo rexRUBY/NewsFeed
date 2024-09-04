@@ -1,16 +1,16 @@
 package com.sparta.newsfeed.post.service;
 
+import com.sparta.newsfeed.entity.User;
 import com.sparta.newsfeed.post.dto.commentDto.CommentRequestDto;
 import com.sparta.newsfeed.post.dto.commentDto.CommentResponseDto;
 import com.sparta.newsfeed.post.entity.Comment;
-import com.sparta.newsfeed.post.entity.Like;
+import com.sparta.newsfeed.post.entity.Likes;
 import com.sparta.newsfeed.post.entity.Post;
 import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
-import com.sparta.newsfeed.post.fix.User;
-import com.sparta.newsfeed.post.fix.UserRepository;
 import com.sparta.newsfeed.post.repository.CommentRepository;
-import com.sparta.newsfeed.post.repository.LikeRepository;
+import com.sparta.newsfeed.post.repository.LikesRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
+import com.sparta.newsfeed.profilerepository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +24,8 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-    private final LikeRepository likeRepository;
+    private final ProfileRepository userRepository;
+    private final LikesRepository likesRepository;
 
 
     //id로 post찾기
@@ -86,16 +86,16 @@ public class CommentService {
             throw new AuthorizedCheckException("not allowed");
         }
     }
-
+    @Transactional
     public CommentResponseDto likeComment(Long postsId, Long commentsId, Long userId) {
         Post post = findPost(postsId);
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
         User user = findUser(userId);
-        List<Like> checkLike = likeRepository.findByComment(comment);
+        List<Likes> checkLikes = likesRepository.findByComment(comment);
         if (!comment.getPost().equals(post)) {
             throw new NullPointerException("wrong input");
         }
-        for (Like l : checkLike) {
+        for (Likes l : checkLikes) {
             if (l.getUser().equals(user)) {
                 throw new AuthorizedCheckException("already liked it");
             }
@@ -103,21 +103,21 @@ public class CommentService {
         if (comment.getUser().equals(user)) {
             throw new RuntimeException("not allowed to like yourself");
         }
-        Like like = new Like(user, post, comment);
-        likeRepository.save(like);
+        Likes likes = new Likes(user, post, comment);
+        likesRepository.save(likes);
         return new CommentResponseDto(comment);
     }
-
+    @Transactional
     public void deleteLikeComment(Long postsId, Long commentsId, Long likesId, Long userId) {
         Post post = findPost(postsId);
         Comment comment = commentRepository.findById(commentsId).orElseThrow(NullPointerException::new);
         User user = findUser(userId);
-        Like like = likeRepository.findById(likesId).orElseThrow(NullPointerException::new);
-        if (!like.getComment().equals(comment) || !like.getComment().getPost().equals(post)) {
+        Likes likes = likesRepository.findById(likesId).orElseThrow(NullPointerException::new);
+        if (!likes.getComment().equals(comment) || !likes.getComment().getPost().equals(post)) {
             throw new NullPointerException("wrong input");
         }
-        if (like.getUser().equals(user)) {
-            likeRepository.delete(like);
+        if (likes.getUser().equals(user)) {
+            likesRepository.delete(likes);
         } else {
             throw new AuthorizedCheckException("not allowed");
         }

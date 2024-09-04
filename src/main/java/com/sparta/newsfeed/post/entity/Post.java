@@ -1,6 +1,6 @@
 package com.sparta.newsfeed.post.entity;
 
-import com.sparta.newsfeed.post.fix.User;
+import com.sparta.newsfeed.entity.User;
 import com.sparta.newsfeed.post.fix.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,11 +26,11 @@ public class Post extends Timestamped {
     @Column(name = "contents")
     private String contents;
 
-    @Column(name = "like")
-    private Long like;
+    @Column(name = "likes")
+    private Long likes;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likeList = new ArrayList<>();
+    private List<Likes> likesList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -41,8 +41,8 @@ public class Post extends Timestamped {
 
 
     public Long countLikes() {
-        this.like = (long) this.likeList.size();
-        return this.like;
+        this.likes = (long) this.likesList.size();
+        return this.likes;
     }
 
     public Post(String contents, String imgUrl, User user) {

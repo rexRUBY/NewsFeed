@@ -2,16 +2,16 @@ package com.sparta.newsfeed.post.service;
 
 
 
-import com.sparta.newsfeed.post.fix.User;
-import com.sparta.newsfeed.post.fix.UserRepository;
+import com.sparta.newsfeed.entity.User;
 import com.sparta.newsfeed.post.dto.postDto.PostRequestDto;
 import com.sparta.newsfeed.post.dto.postDto.PostResponseDto;
-import com.sparta.newsfeed.post.entity.Like;
+import com.sparta.newsfeed.post.entity.Likes;
 import com.sparta.newsfeed.post.entity.Post;
 import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
 import com.sparta.newsfeed.post.fix.Follower;
-import com.sparta.newsfeed.post.repository.LikeRepository;
+import com.sparta.newsfeed.post.repository.LikesRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
+import com.sparta.newsfeed.profilerepository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,8 +28,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-    private final LikeRepository likeRepository;
+    private final ProfileRepository userRepository;
+    private final LikesRepository likesRepository;
 
     //id로 post찾기
     public Post findPost(Long postsId) {
@@ -105,8 +105,8 @@ public class PostService {
     public PostResponseDto likePost(Long id, Long userId) {
         User user = findUser(userId);
         Post post = findPost(id);
-        List<Like> checkLike = likeRepository.findByPost(post);
-        for (Like l : checkLike) {
+        List<Likes> checkLikes = likesRepository.findByPost(post);
+        for (Likes l : checkLikes) {
             if (l.getUser().equals(user)) {
                 throw new AuthorizedCheckException("already liked it");
             }
@@ -114,8 +114,8 @@ public class PostService {
         if (post.getUser().equals(user)) {
             throw new RuntimeException("not allowed to like yourself");
         }
-        Like like = new Like(user, post);
-        likeRepository.save(like);
+        Likes likes = new Likes(user, post);
+        likesRepository.save(likes);
 
         return new PostResponseDto(post);
     }
@@ -145,7 +145,7 @@ public class PostService {
         }
         userList.add(user);
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Post> posts = postRepository.findByUserInOrderByLikeDesc(userList, pageable);
+        Page<Post> posts = postRepository.findByUserInOrderByLikesDesc(userList, pageable);
 
         return posts.map(PostResponseDto::new);
     }
@@ -169,8 +169,8 @@ public class PostService {
     public void deleteLike(Long postsid, Long likeid, Long userId) {
         User user = findUser(userId);
         Post post = findPost(postsid);
-        Like like = likeRepository.findById(likeid).orElseThrow(NullPointerException::new);
-        if (like.getPost().equals(post) && like.getPost().getUser().equals(user)) {
+        Likes likes = likesRepository.findById(likeid).orElseThrow(NullPointerException::new);
+        if (likes.getPost().equals(post) && likes.getPost().getUser().equals(user)) {
             postRepository.delete(post);
         } else {
             throw new AuthorizedCheckException("not allowed");

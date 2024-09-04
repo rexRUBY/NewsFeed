@@ -1,6 +1,6 @@
 package com.sparta.newsfeed.post.entity;
 
-import com.sparta.newsfeed.post.fix.User;
+import com.sparta.newsfeed.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Like {
+public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,12 +25,12 @@ public class Like {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    public Like(User user, Post post) {
+    public Likes(User user, Post post) {
         this.user = user;
         this.post = post;
     }
 
-    public Like(User user, Post post, Comment comment) {
+    public Likes(User user, Post post, Comment comment) {
         this.user = user;
         this.post = post;
         this.comment = comment;
