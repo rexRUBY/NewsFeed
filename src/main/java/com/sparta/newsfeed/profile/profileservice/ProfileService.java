@@ -1,20 +1,14 @@
-package com.sparta.newsfeed.profileservice;
+package com.sparta.newsfeed.profile.profileservice;
 
 import com.sparta.newsfeed.auth.config.PasswordEncoder;
 import com.sparta.newsfeed.auth.dto.AuthUser;
-import com.sparta.newsfeed.dto.RequestUserDto;
-import com.sparta.newsfeed.dto.ResponseUserDto;
-import com.sparta.newsfeed.entity.Gender;
-import com.sparta.newsfeed.entity.User;
-import com.sparta.newsfeed.profilerepository.ProfileRepository;
+import com.sparta.newsfeed.profile.dto.ResponseUserDto;
+import com.sparta.newsfeed.profile.entity.User;
+import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class ProfileService {

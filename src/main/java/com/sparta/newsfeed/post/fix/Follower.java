@@ -1,12 +1,9 @@
 package com.sparta.newsfeed.post.fix;
 
-import com.sparta.newsfeed.entity.User;
+import com.sparta.newsfeed.profile.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -22,6 +19,4 @@ public class Follower {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User follower;
-
-
 }

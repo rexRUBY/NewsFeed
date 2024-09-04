@@ -2,7 +2,7 @@ package com.sparta.newsfeed.post.service;
 
 
 
-import com.sparta.newsfeed.entity.User;
+import com.sparta.newsfeed.profile.entity.User;
 import com.sparta.newsfeed.post.dto.postDto.PostRequestDto;
 import com.sparta.newsfeed.post.dto.postDto.PostResponseDto;
 import com.sparta.newsfeed.post.entity.Likes;
@@ -11,7 +11,7 @@ import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
 import com.sparta.newsfeed.post.fix.Follower;
 import com.sparta.newsfeed.post.repository.LikesRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
-import com.sparta.newsfeed.profilerepository.ProfileRepository;
+import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

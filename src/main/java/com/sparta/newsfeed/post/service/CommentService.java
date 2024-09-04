@@ -1,6 +1,6 @@
 package com.sparta.newsfeed.post.service;
 
-import com.sparta.newsfeed.entity.User;
+import com.sparta.newsfeed.profile.entity.User;
 import com.sparta.newsfeed.post.dto.commentDto.CommentRequestDto;
 import com.sparta.newsfeed.post.dto.commentDto.CommentResponseDto;
 import com.sparta.newsfeed.post.entity.Comment;
@@ -10,7 +10,7 @@ import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
 import com.sparta.newsfeed.post.repository.CommentRepository;
 import com.sparta.newsfeed.post.repository.LikesRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
-import com.sparta.newsfeed.profilerepository.ProfileRepository;
+import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

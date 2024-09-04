@@ -1,10 +1,8 @@
-package com.sparta.newsfeed.dto;
+package com.sparta.newsfeed.profile.dto;
 
-import com.sparta.newsfeed.entity.Gender;
+import com.sparta.newsfeed.profile.entity.Gender;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 @Getter
 @Setter

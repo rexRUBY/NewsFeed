@@ -1,7 +1,7 @@
-package com.sparta.newsfeed.dto;
+package com.sparta.newsfeed.profile.dto;
 
-import com.sparta.newsfeed.entity.Gender;
-import com.sparta.newsfeed.entity.User;
+import com.sparta.newsfeed.profile.entity.Gender;
+import com.sparta.newsfeed.profile.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

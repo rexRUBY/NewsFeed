@@ -1,4 +1,4 @@
-package com.sparta.newsfeed.entity;
+package com.sparta.newsfeed.profile.entity;
 
 import com.sparta.newsfeed.post.fix.Follower;
 import jakarta.persistence.*;

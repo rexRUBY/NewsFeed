@@ -1,6 +1,6 @@
 package com.sparta.newsfeed.auth.dto;
 
-import com.sparta.newsfeed.entity.Gender;
+import com.sparta.newsfeed.profile.entity.Gender;
 import lombok.Getter;
 import lombok.Setter;
 

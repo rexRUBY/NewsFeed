@@ -1,10 +1,9 @@
-package com.sparta.newsfeed.profilecontroller;
+package com.sparta.newsfeed.profile.profilecontroller;
 
 import com.sparta.newsfeed.auth.annotaion.Auth;
 import com.sparta.newsfeed.auth.dto.AuthUser;
-import com.sparta.newsfeed.dto.RequestUserDto;
-import com.sparta.newsfeed.dto.ResponseUserDto;
-import com.sparta.newsfeed.profileservice.ProfileService;
+import com.sparta.newsfeed.profile.dto.ResponseUserDto;
+import com.sparta.newsfeed.profile.profileservice.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +30,7 @@ public class ProfileController {
 
 
     @GetMapping("/getinfo")
-    public ResponseUserDto getprofile(@Auth AuthUser authuser,@RequestParam Long search_id){
+    public ResponseUserDto getprofile(@Auth AuthUser authuser, @RequestParam Long search_id){
         return profileService.getprofile(authuser,search_id);
     }
 

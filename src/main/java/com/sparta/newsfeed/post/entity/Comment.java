@@ -1,6 +1,6 @@
 package com.sparta.newsfeed.post.entity;
 
-import com.sparta.newsfeed.entity.User;
+import com.sparta.newsfeed.profile.entity.User;
 import com.sparta.newsfeed.post.fix.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
