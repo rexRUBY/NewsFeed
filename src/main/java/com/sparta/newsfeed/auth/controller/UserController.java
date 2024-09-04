@@ -3,9 +3,10 @@ package com.sparta.newsfeed.auth.controller;
 import com.sparta.newsfeed.auth.annotaion.Auth;
 import com.sparta.newsfeed.auth.dto.AuthUser;
 import com.sparta.newsfeed.auth.dto.UserRequestDto;
-import com.sparta.newsfeed.auth.dto.UserResponseDto;
 import com.sparta.newsfeed.auth.jwt.JwtUtil;
 import com.sparta.newsfeed.auth.service.UserService;
+import com.sparta.newsfeed.dto.RequestUserDto;
+import com.sparta.newsfeed.dto.ResponseUserDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,12 +24,12 @@ public class UserController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/users/signup")
-    public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto requestDto) {
+    public ResponseEntity<ResponseUserDto> signup(RequestUserDto requestDto) {
         return ResponseEntity.ok(userService.signup(requestDto));
     }
 
     @PostMapping("/users/login")
-    public ResponseEntity<Void> login(@RequestBody UserRequestDto requestDto, HttpServletResponse response) {
+    public ResponseEntity<Void> login(UserRequestDto requestDto, HttpServletResponse response) {
         try {
             String bearerToken = userService.login(requestDto); // 사용자 정보 확인
             jwtUtil.addJwtToCookie(bearerToken, response);
