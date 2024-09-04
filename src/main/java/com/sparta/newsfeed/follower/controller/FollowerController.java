@@ -2,8 +2,8 @@ package com.sparta.newsfeed.follower.controller;
 
 import com.sparta.newsfeed.auth.annotaion.Auth;
 import com.sparta.newsfeed.auth.dto.AuthUser;
-import com.sparta.newsfeed.follower.dto.requestDto.FollowerSaveRequestDto;
-import com.sparta.newsfeed.follower.dto.responseDto.FollowerSaveResponseDto;
+import com.sparta.newsfeed.follower.dto.FollowRequestDto;
+import com.sparta.newsfeed.follower.dto.FollowResponseDto;
 import com.sparta.newsfeed.follower.service.FollowerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +17,15 @@ public class FollowerController {
 
     // post - 친구 추가
     @PostMapping("/users/followers")
-    public ResponseEntity<FollowerSaveResponseDto> saveFollower(@Auth AuthUser authUser, @RequestBody FollowerSaveRequestDto followerSaveRequestDto) {
-        return ResponseEntity.ok(followerService.saveFollower(authUser, followerSaveRequestDto));
+    public ResponseEntity<FollowResponseDto> saveFollower(@Auth AuthUser authUser, @RequestBody FollowRequestDto requestDto) {
+        return ResponseEntity.ok(followerService.saveFollower(authUser,requestDto));
     }
 
-//    // post - 친구 신청 수락
-//    @PostMapping("")
-//    public ResponseEntity<FollowAcceptResponseDto> acceptFollow(@RequestParam String email) {
-//        return ResponseEntity.ok(followerService.acceptFollow(email));
-//    }
+    // post - 친구 신청 수락
+    @PostMapping("/users/followers/accept")
+    public ResponseEntity<FollowResponseDto> acceptFollow(@Auth AuthUser authUser, @RequestBody FollowRequestDto requestDto) {
+        return ResponseEntity.ok(followerService.acceptFollow(authUser,requestDto));
+    }
 
 //    // delete - 친구 삭제
 //    @DeleteMapping("/users/{userId}/followers/{followerId}")

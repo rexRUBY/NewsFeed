@@ -4,10 +4,12 @@ import com.sparta.newsfeed.auth.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Follower { // 어떤 유저가 어떤 유저를 팔로우했는지 출력하는 테이블
 
@@ -15,15 +17,11 @@ public class Follower { // 어떤 유저가 어떤 유저를 팔로우했는지 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 테이블 자체의 데이터 아이디
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user; // 유저 아이디, PK
+    @Column(name = "user_id")
+    private Long userId; // 친구신청한 유저 아이디, PK
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "follower_id")
-    private User follower; // 팔로우 대상 유저 아이디
-
-    private boolean isFollowAbailable = true;
+    @Column(name = "follower_id")
+    private Long followerId; // 친구신청 받는 유저 아이디
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,13 +33,8 @@ public class Follower { // 어떤 유저가 어떤 유저를 팔로우했는지 
     }
 
     public Follower(User user, User follower) {
-        this.user = user;
-        this.follower = follower;
+        this.userId = user.getId();
+        this.followerId = follower.getId();
         this.status = Status.pending;
-    }
-
-    // 팔로워 여부
-    public void changeFollowStatus() {
-        this.isFollowAbailable = !isFollowAbailable;
     }
 }

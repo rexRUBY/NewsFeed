@@ -10,6 +10,7 @@ import com.sparta.newsfeed.auth.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    @Transactional
     public UserResponseDto signup(UserRequestDto requestDto) {
         String userName = requestDto.getUserName();
         String email = requestDto.getEmail();
@@ -42,6 +44,7 @@ public class UserService {
         return new UserResponseDto(userRepository.save(newUser));
     }
 
+    @Transactional
     public String login(UserRequestDto requestDto) {
         // 사용자 확인
         User user = userRepository.findByEmail(requestDto.getEmail());
@@ -60,6 +63,7 @@ public class UserService {
         return jwtUtil.createToken(user.getId());
     }
 
+    @Transactional
     public void withdrawal(AuthUser authUser) {
         User user = userRepository.findById(authUser.getId())
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));

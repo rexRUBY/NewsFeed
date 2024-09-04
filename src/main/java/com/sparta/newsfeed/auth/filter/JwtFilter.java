@@ -62,7 +62,6 @@ public class JwtFilter implements Filter {
         try {
             // JWT 유효성 검사와 claims 추출
             Claims claims = jwtUtil.extractClaims(jwt);
-
             // 사용자 정보를 ArgumentResolver 로 넘기기 위해 HttpServletRequest 에 세팅
             httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
             chain.doFilter(request, response);
