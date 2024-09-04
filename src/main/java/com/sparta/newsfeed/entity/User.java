@@ -43,6 +43,12 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date birthday;
 
+    public User(String username, String password, String email) {
+        this.name = username;
+        this.password = password;
+        this.email = email;
+    }
+
     public User(String email,String password,String name,String phone_number,Gender gender,String nickname,String bio,Date date){
         this.email = email;
         this.password = password;

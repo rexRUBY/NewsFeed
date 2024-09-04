@@ -3,10 +3,11 @@ package com.sparta.newsfeed.auth.service;
 import com.sparta.newsfeed.auth.config.PasswordEncoder;
 import com.sparta.newsfeed.auth.dto.AuthUser;
 import com.sparta.newsfeed.auth.dto.UserRequestDto;
-import com.sparta.newsfeed.auth.dto.UserResponseDto;
-import com.sparta.newsfeed.auth.entity.User;
 import com.sparta.newsfeed.auth.jwt.JwtUtil;
-import com.sparta.newsfeed.auth.repository.UserRepository;
+import com.sparta.newsfeed.dto.RequestUserDto;
+import com.sparta.newsfeed.dto.ResponseUserDto;
+import com.sparta.newsfeed.entity.User;
+import com.sparta.newsfeed.profilerepository.ProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,16 +16,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final ProfileRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public UserResponseDto signup(UserRequestDto requestDto) {
-        String userName = requestDto.getUserName();
+    public ResponseUserDto signup(RequestUserDto requestDto) {
+        String userName = requestDto.getName();
         String email = requestDto.getEmail();
 
         // 회원 중복 확인
-        if (userRepository.findByUsername(userName) != null) {
+        if (userRepository.findByName(userName) != null) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
@@ -35,11 +36,16 @@ public class UserService {
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
-        String phoneNumber = requestDto.getPhoneNumber();
 
         // 사용자 등록
-        User newUser = new User(userName, encodedPassword, email, phoneNumber);
-        return new UserResponseDto(userRepository.save(newUser));
+        User newUser = new User(userName, encodedPassword, email);
+        if(requestDto.getPhone_number() != null)
+            newUser.setPhone_number(requestDto.getPhone_number());
+        if(requestDto.getNickname() != null)
+            newUser.setNickname(requestDto.getNickname());
+        if(requestDto.getBio() != null)
+            newUser.setBio(requestDto.getBio());
+        return new ResponseUserDto(userRepository.save(newUser));
     }
 
     public String login(UserRequestDto requestDto) {
