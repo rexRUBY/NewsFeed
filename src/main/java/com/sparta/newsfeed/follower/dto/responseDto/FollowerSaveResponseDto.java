@@ -6,13 +6,11 @@ import lombok.Getter;
 
 @Getter
 public class FollowerSaveResponseDto {
-    private final User follower;
-    private final User user;
-//    private final Follower.Status status;
+    private final String followerEmail;
+    private final String userEmail;
 
     public FollowerSaveResponseDto(Follower saveFollower) {
-        this.follower = saveFollower.getFollower();
-        this.user = saveFollower.getUser();
-//        this.status = saveFollower.getStatus();
+        this.followerEmail = saveFollower.getFollower().getEmail();
+        this.userEmail = saveFollower.getUser().getEmail();
     }
 }

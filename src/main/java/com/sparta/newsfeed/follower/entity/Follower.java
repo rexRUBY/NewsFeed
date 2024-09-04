@@ -15,6 +15,9 @@ public class Follower { // 어떤 유저가 어떤 유저를 팔로우했는지 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 테이블 자체의 데이터 아이디
 
+    @Column(name = "email")
+    private String email; // 유저 이메일
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user; // 유저 아이디, PK
@@ -23,13 +26,11 @@ public class Follower { // 어떤 유저가 어떤 유저를 팔로우했는지 
     @JoinColumn(name = "follower_id")
     private User follower; // 팔로우 대상 유저 아이디
 
-    private boolean isFollowAbailable = true;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status = null; // 친구 신청 상태
 
-    public enum Status{ // 친구신청을 보냈을 때 상태
+    public enum Status { // 친구신청을 보냈을 때 상태
         pending,
         accepted
     }
@@ -40,8 +41,11 @@ public class Follower { // 어떤 유저가 어떤 유저를 팔로우했는지 
         this.status = Status.pending;
     }
 
-    // 팔로워 여부
-    public void changeFollowStatus() {
-        this.isFollowAbailable = !isFollowAbailable;
+    // 친구 신청 수락 시 세팅
+    public void changeAcceptStatus() {
+        if (this.status == Status.pending) {
+            this.status = Status.accepted;
+        }
     }
+
 }
