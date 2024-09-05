@@ -10,7 +10,7 @@ import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
 import com.sparta.newsfeed.post.repository.CommentRepository;
 import com.sparta.newsfeed.post.repository.LikesRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
-import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
+import com.sparta.newsfeed.profile.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

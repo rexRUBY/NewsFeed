@@ -7,10 +7,11 @@ import com.sparta.newsfeed.auth.jwt.JwtUtil;
 import com.sparta.newsfeed.profile.dto.RequestUserDto;
 import com.sparta.newsfeed.profile.dto.ResponseUserDto;
 import com.sparta.newsfeed.profile.entity.User;
-import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
+import com.sparta.newsfeed.profile.repository.ProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +20,8 @@ public class UserService {
     private final ProfileRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-
+    
+    @Transactional
     public ResponseUserDto signup(RequestUserDto requestDto) {
         String userName = requestDto.getName();
         String email = requestDto.getEmail();
@@ -39,8 +41,8 @@ public class UserService {
 
         // 사용자 등록
         User newUser = new User(userName, encodedPassword, email);
-        if(requestDto.getPhone_number() != null)
-            newUser.setPhone_number(requestDto.getPhone_number());
+        if(requestDto.getPhoneNumber() != null)
+            newUser.setPhone_number(requestDto.getPhoneNumber());
         if(requestDto.getNickname() != null)
             newUser.setNickname(requestDto.getNickname());
         if(requestDto.getBio() != null)
@@ -48,6 +50,7 @@ public class UserService {
         return new ResponseUserDto(userRepository.save(newUser));
     }
 
+    @Transactional
     public String login(UserRequestDto requestDto) {
         // 사용자 확인
         User user = userRepository.findByEmail(requestDto.getEmail());
@@ -66,6 +69,7 @@ public class UserService {
         return jwtUtil.createToken(user.getId());
     }
 
+    @Transactional
     public void withdrawal(AuthUser authUser) {
         User user = userRepository.findById(authUser.getId())
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));

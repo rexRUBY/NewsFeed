@@ -11,24 +11,23 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/users/signup")
-    public ResponseEntity<ResponseUserDto> signup(RequestUserDto requestDto) {
+    @PostMapping("/signup")
+    public ResponseEntity<ResponseUserDto> signup(@RequestBody RequestUserDto requestDto) {
         return ResponseEntity.ok(userService.signup(requestDto));
     }
 
-    @PostMapping("/users/login")
-    public ResponseEntity<Void> login(UserRequestDto requestDto, HttpServletResponse response) {
+    @PostMapping("/login")
+    public ResponseEntity<Void> login(@RequestBody UserRequestDto requestDto, HttpServletResponse response) {
         try {
             String bearerToken = userService.login(requestDto); // 사용자 정보 확인
             jwtUtil.addJwtToCookie(bearerToken, response);
@@ -43,7 +42,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400 Bad Request, 컴파일 에러 때문에 넣음.
     }
 
-    @GetMapping("/users/withdrawal") // 회원 탈퇴
+    @GetMapping("/withdrawal") // 회원 탈퇴
     public ResponseEntity<Void> withdrawal(@Auth AuthUser authUser) {
         userService.withdrawal(authUser);
         return ResponseEntity.ok().build();

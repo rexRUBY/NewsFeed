@@ -8,7 +8,7 @@ import com.sparta.newsfeed.follower.dto.responseDto.FollowerSaveResponseDto;
 import com.sparta.newsfeed.follower.entity.Follower;
 import com.sparta.newsfeed.follower.repository.FollowerRepository;
 import com.sparta.newsfeed.profile.entity.User;
-import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
+import com.sparta.newsfeed.profile.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
