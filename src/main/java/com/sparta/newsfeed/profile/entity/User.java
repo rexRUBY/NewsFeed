@@ -1,6 +1,6 @@
 package com.sparta.newsfeed.profile.entity;
 
-import com.sparta.newsfeed.post.fix.Follower;
+import com.sparta.newsfeed.follower.entity.Follower;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import lombok.Getter;
@@ -45,9 +45,6 @@ public class User {
 
     @Temporal(TemporalType.DATE)
     private Date birthday;
-
-    @OneToMany(mappedBy = "follower")
-    private List<Follower> follower = new ArrayList<>();
 
     public User(String username, String password, String email) {
         this.name = username;
