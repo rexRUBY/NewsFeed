@@ -32,7 +32,7 @@ public class User {
     private String name;
 
     @Column(length=255)
-    private String phone_number;
+    private String phoneNumber;
 
     @Column(length=50)
     private String nickname;
@@ -52,11 +52,11 @@ public class User {
         this.email = email;
     }
 
-    public User(String email,String password,String name,String phone_number,Gender gender,String nickname,String bio,Date date){
+    public User(String email,String password,String name,String phoneNumber,Gender gender,String nickname,String bio,Date date){
         this.email = email;
         this.password = password;
         this.name = name;
-        this.phone_number = phone_number;
+        this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.bio = bio;
         this.birthday = date;

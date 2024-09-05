@@ -15,7 +15,7 @@ public class ResponseUserDto {
     private Long id;
     private String email;
     private String name;
-    private String phone_number;
+    private String phoneNumber;
     private String nickname;
     private Gender gender;
     private String bio;
@@ -25,5 +25,6 @@ public class ResponseUserDto {
         this.id = newUser.getId();
         this.name = newUser.getName();
         this.email = newUser.getEmail();
+        this.phoneNumber = newUser.getPhoneNumber();
     }
 }

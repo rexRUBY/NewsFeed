@@ -8,7 +8,7 @@ import com.sparta.newsfeed.profile.dto.RequestUserDto;
 import com.sparta.newsfeed.profile.dto.ResponseUserDto;
 import com.sparta.newsfeed.profile.entity.User;
 import com.sparta.newsfeed.profile.repository.ProfileRepository;
-import com.sparta.newsfeed.profile.profileservice.ProfileService;
+import com.sparta.newsfeed.profile.service.ProfileService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,7 +47,7 @@ public class UserService {
         // 사용자 등록
         User newUser = new User(userName, encodedPassword, email);
         if(requestDto.getPhoneNumber() != null)
-            newUser.setPhone_number(requestDto.getPhoneNumber());
+            newUser.setPhoneNumber(requestDto.getPhoneNumber());
         if(requestDto.getNickname() != null)
             newUser.setNickname(requestDto.getNickname());
         if(requestDto.getBio() != null)
