@@ -13,6 +13,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -43,12 +47,29 @@ public class UserService {
 
         // 사용자 등록
         User newUser = new User(userName, encodedPassword, email);
-        if(requestDto.getPhone_number() != null)
+        if(requestDto.getPhone_number() != null){
             newUser.setPhone_number(requestDto.getPhone_number());
-        if(requestDto.getNickname() != null)
+        }
+        if(requestDto.getNickname() != null){
             newUser.setNickname(requestDto.getNickname());
-        if(requestDto.getBio() != null)
+        }
+        if(requestDto.getBio() != null){
             newUser.setBio(requestDto.getBio());
+        }
+        if(requestDto.getGender() != null){
+            newUser.setGender(requestDto.getGender());
+        }
+        if(requestDto.getBirthday() != null){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            try{
+                Date date = dateFormat.parse(requestDto.getBirthday());
+                newUser.setBirthday(date);
+            }catch(ParseException e){
+                throw new IllegalArgumentException("잘못된 날짜 형식입니다.(yyyy-MM-dd)");
+            }
+
+        }
+
         return new ResponseUserDto(userRepository.save(newUser));
     }
 
@@ -70,7 +91,10 @@ public class UserService {
         return jwtUtil.createToken(user.getId());
     }
 
-    public void withdrawal(AuthUser authUser) {
+    public void withdrawal(AuthUser authUser, String password) throws Exception {
+        if(!ProfileService.isValidPassword(password)){
+            throw new IllegalArgumentException("비밀번호가 일지하지 않습니다.");
+        }
         User user = userRepository.findById(authUser.getId())
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
         userRepository.delete(user);

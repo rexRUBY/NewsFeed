@@ -20,7 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,10 +153,17 @@ public class PostService {
     }
 
     //날짜사이 게시물 검색
-    public Page<PostResponseDto> getPostByTime(LocalDateTime startDate, LocalDateTime endDate, int page, int size, Long userId) {
+    public Page<PostResponseDto> getPostByTime(String startDate, String endDate, int page, int size, Long userId) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startdate = LocalDate.parse(startDate, formatter);
+        LocalDate enddate = LocalDate.parse(endDate, formatter);
+        LocalDateTime startDateTime = startdate.atStartOfDay();// 00:00:00
+        LocalDateTime endDateTime = enddate.atTime(23, 59, 59); // 23:59:59
+
         List<User> userList = findMyFollower(userId);
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Post> posts = postRepository.findByCreatedAtBetween(startDate, endDate, pageable);
+        Page<Post> posts = postRepository.findByCreatedAtBetween(startDateTime, endDateTime, pageable);
 
         return posts.map(PostResponseDto::new);
     }
@@ -164,7 +173,7 @@ public class PostService {
         User user = findUser(userId);
         Post post = findPost(postsid);
         Likes likes = likesRepository.findById(likeid).orElseThrow(NullPointerException::new);
-        if (likes.getPost().equals(post) && likes.getPost().getUser().equals(user)) {
+        if (likes.getPost().equals(post) && likes.getUser().equals(user)) {
             postRepository.delete(post);
         } else {
             throw new AuthorizedCheckException("not allowed");

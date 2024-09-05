@@ -25,11 +25,10 @@ public class ProfileController {
 //    }
 
     //프로필 조회 기능 : 다른 사용자의 프로필 조회 시, 민감한 정보는 표시되지 않는다.
-    //원래는 세션 값으로 현재 사용자 확인을 해야하지만 간단히 구현하기 위해 RequestUserDto로 대체한다.
-    //RequestUserDto의 id값 == 현재 사용자, search_id == 조회대상의 id
+    //searchId == 조회대상의 id
     @GetMapping("/getinfo")
-    public ResponseUserDto getprofile(@Auth AuthUser authuser, @RequestParam Long search_id){
-        return profileService.getprofile(authuser,search_id);
+    public ResponseUserDto getprofile(@Auth AuthUser authuser, @RequestParam Long searchId){
+        return profileService.getprofile(authuser,searchId);
     }
 
     @PutMapping("/update")
@@ -40,9 +39,10 @@ public class ProfileController {
                                 @RequestParam(required = false) String phone_number,
                                 @RequestParam(required = false) String email,
                                 @RequestParam(required = false) String nickname,
-                                @RequestParam(required = false) String bio){
+                                @RequestParam(required = false) String bio,
+                                @RequestParam(required= false) String imageUrl){
         try{
-            return profileService.updateprofile(authuser,input_password,edit_password,name,phone_number,email,nickname,bio);
+            return profileService.updateprofile(authuser,input_password,edit_password,name,phone_number,email,nickname,bio,imageUrl);
         }catch(Exception e){
             return e.getMessage();
         }

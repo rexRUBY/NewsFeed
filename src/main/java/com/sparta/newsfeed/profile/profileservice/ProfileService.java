@@ -5,28 +5,41 @@ import com.sparta.newsfeed.auth.dto.AuthUser;
 import com.sparta.newsfeed.profile.dto.ResponseUserDto;
 import com.sparta.newsfeed.profile.entity.User;
 import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import java.io.IOException;
 
+
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Service
 public class ProfileService {
-    @Autowired
-    ProfileRepository profileRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+
+    private final ProfileRepository profileRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     //대소문자 포함 + 특수문자, 숫자 하나 이상 포함된 영문 8글자 이상 비밀번호
     private static final String PASSWORD_PATTERN =
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+    private static final String UPLOAD_DIR = "uploads/profile_images/";
 
     private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 
-    public ResponseUserDto getprofile(AuthUser authuser, Long search_id) {
+    public ProfileService(ProfileRepository profileRepository, PasswordEncoder passwordEncoder) {
+        this.profileRepository = profileRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public ResponseUserDto getprofile(AuthUser authuser, Long searchId) {
         Long user_id;
-        User search_user = profileRepository.findById(search_id).orElseThrow(()->new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        User search_user = profileRepository.findById(searchId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 사용자 입니다."));
         if(authuser==null){
             // 로그인이 되어있지 않았다면 DB에 존재할 수 없는 값을 넣음
             user_id=-1L;
@@ -40,7 +53,7 @@ public class ProfileService {
         ResponseUserDto res = new ResponseUserDto();
         
         //본인이 아닐 시 민감 정보 출력안함
-        if(Objects.equals(user_id, search_id)){
+        if(Objects.equals(user_id, searchId)){
             res.setName(search_user.getName());
             res.setPhone_number(search_user.getPhone_number());
         }
@@ -56,8 +69,8 @@ public class ProfileService {
     //---------------------------------------------------------------------------------------------------------------------
 
     //프로필 수정
-    public String updateprofile(AuthUser authuser, String input_password,String edit_password,String name,String phone_number,String email,String nickname,String bio) {
-        //현재 로그인 사용자와 수정할 프로필의 사용자가 다르다면 예외를 발생시켜야 한다. 아직은 인증, 인가 시스템이 구현되어있지 않았음
+    public String updateprofile(AuthUser authuser, String input_password,String edit_password,String name,String phone_number,String email,String nickname,String bio, String imageUrl) {
+        //현재 로그인 사용자와 수정할 프로필의 사용자가 다르다면 예외를 발생시켜야 한다.
         User user = profileRepository.findById(authuser.getId()).orElseThrow(()->new IllegalArgumentException("올바른 요청이 아닙니다."));
 
         //인가가 되었다면
@@ -87,9 +100,66 @@ public class ProfileService {
             user.setNickname(nickname);
         if(bio != null)
             user.setBio(bio);
+        if(imageUrl != null){
+            System.out.println("Received imageUrl: " + imageUrl);
+            try{
+                uploadProfilePictureByUrl(user,imageUrl);
+            }catch(Exception e){
+                return e.getMessage();
+            }
+
+        }
         profileRepository.save(user);
 
         return "수정 완료";
+    }
+
+    public void uploadProfilePictureByUrl(User user, String imageUrl){
+        try {
+            // 이미지 URL에서 파일 확장자 가져오기
+            String fileExtension = getFileExtensionFromUrl(imageUrl);
+
+            // 유효한 확장자인지 확인 (필요시 추가적인 검증 가능)
+            if (!isValidImageExtension(fileExtension)) {
+                throw new Exception("올바른 확장자가 아닙니다.");
+            }
+
+            // 이미지 다운로드
+            URL url = new URL(imageUrl);
+            byte[] imageBytes = url.openStream().readAllBytes();
+
+            // 디렉토리 생성
+            Path uploadDir = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+            }
+
+            // 저장할 파일명 생성 (UUID 사용)
+            String fileName = UUID.randomUUID().toString() + "." + fileExtension;
+            Path filePath = uploadDir.resolve(fileName);
+
+            // 파일 저장
+            Files.write(filePath, imageBytes);
+
+            // 저장된 파일 경로를 URL로 변환
+            String fileUrl = "/profile/image/" + fileName;
+
+            // 사용자의 프로필 이미지 URL을 저장
+            user.setProfileImageUrl(fileUrl);
+            profileRepository.save(user);
+        } catch (IOException e) {
+            throw new RuntimeException("파일 저장 실패");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private String getFileExtensionFromUrl(String imageUrl) {
+        return imageUrl.substring(imageUrl.lastIndexOf(".") + 1).toLowerCase();
+    }
+
+    // 유효한 이미지 파일 확장자인지 확인하는 메서드
+    private boolean isValidImageExtension(String extension) {
+        return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("gif");
     }
 
     public static boolean isValidPassword(String password) {

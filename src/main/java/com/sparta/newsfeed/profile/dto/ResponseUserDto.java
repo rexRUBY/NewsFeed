@@ -25,5 +25,10 @@ public class ResponseUserDto {
         this.id = newUser.getId();
         this.name = newUser.getName();
         this.email = newUser.getEmail();
+        this.phone_number = newUser.getPhone_number();
+        this.nickname = newUser.getNickname();
+        this.bio = newUser.getBio();
+        this.birthday = newUser.getBirthday();
+        this.gender = newUser.getGender();
     }
 }

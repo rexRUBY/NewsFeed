@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class PostController {
     @DeleteMapping("/posts/{postsid}/like/{likeid}")
     public void deleteLike(@PathVariable Long postsid,
                            @PathVariable Long likeid,
-                           AuthUser authUser) {
+                           @Auth AuthUser authUser) {
         Long userId = authUser.getId();
         postService.deleteLike(postsid, likeid, userId);
     }
@@ -73,8 +74,8 @@ public class PostController {
     @GetMapping("/posts/news/search")
     public ResponseEntity<Page<PostResponseDto>> getPostByTime(@RequestParam(defaultValue = "1") int page,
                                                                @RequestParam(defaultValue = "10") int size,
-                                                               @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                                               @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                                               @RequestParam("startDate") String startDate,
+                                                               @RequestParam("endDate") String endDate,
                                                                @Auth AuthUser authUser) {
         Long userId = authUser.getId();
         return ResponseEntity.ok(postService.getPostByTime(startDate, endDate, page, size, userId));

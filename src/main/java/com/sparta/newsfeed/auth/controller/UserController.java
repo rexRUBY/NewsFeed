@@ -11,9 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,9 +41,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400 Bad Request, 컴파일 에러 때문에 넣음.
     }
 
-    @GetMapping("/users/withdrawal") // 회원 탈퇴
-    public ResponseEntity<Void> withdrawal(@Auth AuthUser authUser) {
-        userService.withdrawal(authUser);
+    @DeleteMapping("/users/withdrawal") // 회원 탈퇴
+    public ResponseEntity<Void> withdrawal(@Auth AuthUser authUser,String password) {
+        try{
+            userService.withdrawal(authUser, password);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         return ResponseEntity.ok().build();
     }
 }

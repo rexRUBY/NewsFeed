@@ -3,6 +3,7 @@ package com.sparta.newsfeed.profile.entity;
 import com.sparta.newsfeed.follower.entity.Follower;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Email(message ="올바른 이메일 형식이 아닙니다.")
     @Column(unique=true,nullable=false,length=255)
     private String email;
 
@@ -45,6 +47,9 @@ public class User {
 
     @Temporal(TemporalType.DATE)
     private Date birthday;
+
+    @Column(length = 512)
+    private String profileImageUrl;
 
     public User(String username, String password, String email) {
         this.name = username;
