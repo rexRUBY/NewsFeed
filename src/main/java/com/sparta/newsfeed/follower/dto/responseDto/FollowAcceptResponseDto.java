@@ -1,7 +1,7 @@
 package com.sparta.newsfeed.follower.dto.responseDto;
 
-import com.sparta.newsfeed.auth.entity.User;
 import com.sparta.newsfeed.follower.entity.Follower;
+import com.sparta.newsfeed.profile.entity.User;
 import lombok.Getter;
 
 @Getter
