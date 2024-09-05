@@ -31,14 +31,13 @@ public class FollowerController {
         return ResponseEntity.ok(followerService.acceptFollow(authUser, followerRequestDto));
     }
 
-
     // delete - 친구 신청 거절하기
     @DeleteMapping("/users/followers/denied")
     public void deniedFollow(@Auth AuthUser authUser, @RequestBody FollowerRequestDto followerRequestDto) {
         followerService.deniedFollow(authUser, followerRequestDto);
     }
 
-    // 친구 신청 들어온 목록 조회하기
+    // get - 친구 신청 들어온 목록 조회하기
     @GetMapping("/users/followers")
     public ResponseEntity<List<FollowerGetResponseDto>> getFollowList(@Auth AuthUser authUser) {
         return ResponseEntity.ok(followerService.getFollowList(authUser));
