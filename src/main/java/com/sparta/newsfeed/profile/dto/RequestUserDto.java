@@ -11,9 +11,10 @@ public class RequestUserDto {
     private String email;
     private String password;
     private String name;
-    private String phone_number;
+    private String phoneNumber;
     private String nickname;
-    private Gender gender;
     private String bio;
     private String birthday;
+    private String inputPassword;
+    private String editPassword;
 }

@@ -1,4 +1,4 @@
-package com.sparta.newsfeed.profile.profilerepository;
+package com.sparta.newsfeed.profile.repository;
 
 import com.sparta.newsfeed.profile.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
