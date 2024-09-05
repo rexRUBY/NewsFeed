@@ -26,8 +26,6 @@ public class Post extends Timestamped {
     @Column(name = "contents")
     private String contents;
 
-    /*@Column(name = "likes")
-    private Long likes = countLikes();*/
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likesList = new ArrayList<>();
