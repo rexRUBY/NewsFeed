@@ -4,19 +4,19 @@ import com.sparta.newsfeed.auth.config.PasswordEncoder;
 import com.sparta.newsfeed.auth.dto.AuthUser;
 import com.sparta.newsfeed.profile.dto.ResponseUserDto;
 import com.sparta.newsfeed.profile.entity.User;
-import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sparta.newsfeed.profile.repository.ProfileRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
+@AllArgsConstructor
 public class ProfileService {
-    @Autowired
-    ProfileRepository profileRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+
+    private final ProfileRepository profileRepository;
+    private final PasswordEncoder passwordEncoder;
 
     //대소문자 포함 + 특수문자, 숫자 하나 이상 포함된 영문 8글자 이상 비밀번호
     private static final String PASSWORD_PATTERN =
@@ -52,8 +52,6 @@ public class ProfileService {
 
         return res;
     }
-
-    //---------------------------------------------------------------------------------------------------------------------
 
     //프로필 수정
     public String updateprofile(AuthUser authuser, String input_password,String edit_password,String name,String phone_number,String email,String nickname,String bio) {

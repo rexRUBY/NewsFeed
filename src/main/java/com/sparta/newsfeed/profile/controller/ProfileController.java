@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/profile")
 public class ProfileController {
 
-    private ProfileService profileService;
+    private final ProfileService profileService;
 
     @GetMapping("/getinfo")
     public ResponseUserDto getprofile(@Auth AuthUser authuser){
