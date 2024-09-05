@@ -8,7 +8,7 @@ import com.sparta.newsfeed.follower.dto.responseDto.FollowerSaveResponseDto;
 import com.sparta.newsfeed.follower.entity.Follower;
 import com.sparta.newsfeed.follower.repository.FollowerRepository;
 import com.sparta.newsfeed.profile.entity.User;
-import com.sparta.newsfeed.profile.repository.ProfileRepository;
+import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,10 +42,8 @@ public class FollowerService {
         }
 
         // 이미 신청한 유저에게 신청을 보내는지 체크
-        if (followerRepository.findByUserAndFollower(user, follower) != null) {
-            throw new IllegalArgumentException("이미 팔로우 중입니다.");
-        } else if (followerRepository.findByUserAndFollower(follower, user) != null) {
-            throw new IllegalArgumentException("이미 팔로우 중입니다.");
+        if (followerRepository.findByUserAndFollower(user, follower) != null || followerRepository.findByUserAndFollower(follower, user) != null) {
+            throw new IllegalArgumentException("이미 친구 신청을 보냈습니다.");
         }
 
         Follower newFollower = new Follower(user, follower);
