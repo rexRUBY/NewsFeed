@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 @Service
 public class ProfileService {
@@ -17,40 +18,12 @@ public class ProfileService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-//    public String createprofile(RequestUserDto req) {
-//        String email = req.getEmail();
-//        Optional<User> checkemail = profileRepository.findByEmail(email);
-//        if (checkemail.isPresent()) {
-//            throw new IllegalArgumentException("이미 등록된 이메일 입니다.");
-//        }
-//        String password = req.getPassword();
-//        password = passwordEncoder.encode(password);
-//
-//        String name = req.getName();
-//        String phone_number = req.getPhone_number();
-//        Gender gender = req.getGender();
-//        String nickname = req.getNickname();
-//        String bio = req.getBio();
-//
-//        Date birthday = null;
-//        if(req.getBirthday() != null) {
-//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//            try{
-//                birthday = formatter.parse(req.getBirthday());
-//            }catch (ParseException e){
-//                throw new IllegalArgumentException("잘못된 날짜 형식입니다. 형식 : yyyy-MM-dd");
-//            }
-//        }
-//
-//
-//        User user = new User(email, password, name, phone_number, gender,nickname, bio,birthday);
-//        profileRepository.save(user);
-//        return "등록 성공";
-//
-//    }
+    //대소문자 포함 + 특수문자, 숫자 하나 이상 포함된 영문 8글자 이상 비밀번호
+    private static final String PASSWORD_PATTERN =
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 
-    //원래는 세션 값으로 현재 사용자 확인을 해야하지만 간단히 구현하기 위해 RequestUserDto로 대체한다.
-    //RequestUserDto의 id값 == 현재 사용자, search_id == 조회대상의 id
+    private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+
     public ResponseUserDto getprofile(AuthUser authuser, Long search_id) {
         Long user_id;
         User search_user = profileRepository.findById(search_id).orElseThrow(()->new IllegalArgumentException("존재하지 않는 사용자 입니다."));
@@ -91,6 +64,10 @@ public class ProfileService {
 
         //패스워드 수정 시 본인확인을 위해 비밀번호를 확인
         if(input_password != null && passwordEncoder.matches(input_password, user.getPassword())) {
+            if(!isValidPassword(edit_password)){
+                throw new IllegalArgumentException("하나 이상의 대소문자, 특수문자, 숫자를 포함해 8글자 이상이어야 합니다.");
+            }
+
             if(input_password.equals(edit_password)) {
                 throw new IllegalArgumentException("현재 비밀번호와 같은 비밀번호로 설정할 수 없습니다.");
             }
@@ -113,5 +90,9 @@ public class ProfileService {
         profileRepository.save(user);
 
         return "수정 완료";
+    }
+
+    public static boolean isValidPassword(String password) {
+        return pattern.matcher(password).matches();
     }
 }

@@ -8,6 +8,7 @@ import com.sparta.newsfeed.profile.dto.RequestUserDto;
 import com.sparta.newsfeed.profile.dto.ResponseUserDto;
 import com.sparta.newsfeed.profile.entity.User;
 import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
+import com.sparta.newsfeed.profile.profileservice.ProfileService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,9 @@ public class UserService {
         // 이메일 중복 확인
         if (userRepository.findByEmail(email) != null) {
             throw new IllegalArgumentException("중복된 Email 입니다.");
+        }
+        if(!ProfileService.isValidPassword(requestDto.getPassword())){
+            throw new IllegalArgumentException("하나 이상의 대소문자, 특수문자, 숫자를 포함해 8글자 이상이어야 합니다.");
         }
 
         // 비밀번호 암호화
