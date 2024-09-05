@@ -1,6 +1,6 @@
 package com.sparta.newsfeed.follower.entity;
 
-import com.sparta.newsfeed.auth.entity.User;
+import com.sparta.newsfeed.profile.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

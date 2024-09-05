@@ -48,7 +48,6 @@ public class ProfileService {
 //        return "등록 성공";
 //
 //    }
-
     //원래는 세션 값으로 현재 사용자 확인을 해야하지만 간단히 구현하기 위해 RequestUserDto로 대체한다.
     //RequestUserDto의 id값 == 현재 사용자, search_id == 조회대상의 id
     public ResponseUserDto getprofile(AuthUser authuser, Long search_id) {

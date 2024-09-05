@@ -2,13 +2,14 @@ package com.sparta.newsfeed.post.service;
 
 
 
+import com.sparta.newsfeed.follower.entity.Follower;
+import com.sparta.newsfeed.follower.repository.FollowerRepository;
 import com.sparta.newsfeed.profile.entity.User;
 import com.sparta.newsfeed.post.dto.postDto.PostRequestDto;
 import com.sparta.newsfeed.post.dto.postDto.PostResponseDto;
 import com.sparta.newsfeed.post.entity.Likes;
 import com.sparta.newsfeed.post.entity.Post;
 import com.sparta.newsfeed.post.exception.AuthorizedCheckException;
-import com.sparta.newsfeed.post.fix.Follower;
 import com.sparta.newsfeed.post.repository.LikesRepository;
 import com.sparta.newsfeed.post.repository.PostRepository;
 import com.sparta.newsfeed.profile.profilerepository.ProfileRepository;
@@ -30,7 +31,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final ProfileRepository userRepository;
     private final LikesRepository likesRepository;
-
+    private final FollowerRepository followerRepository;
     //id로 post찾기
     public Post findPost(Long postsId) {
         Post post = postRepository.findById(postsId).orElseThrow(NullPointerException::new);
@@ -41,6 +42,23 @@ public class PostService {
     public User findUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(NullPointerException::new);
         return user;
+    }
+    public List<User> findMyFollower(Long userId){
+        User user = findUser(userId);
+        List<Follower> followList = followerRepository.findByUser(user);
+        List<User> followUserList = new ArrayList<>();
+        for (Follower follower : followList) {
+            if(follower.getStatus().equals(Follower.Status.accepted)){
+                followUserList.add(follower.getFollower());
+            }
+        }
+        List<Follower> followerList2 = followerRepository.findByFollower(user);
+        for (Follower follower : followerList2) {
+            if(follower.getStatus().equals(Follower.Status.accepted)) {
+                followUserList.add(follower.getUser());
+            }
+        }
+        return followUserList;
     }
 
     @Transactional
@@ -88,13 +106,7 @@ public class PostService {
     }
 
     public Page<PostResponseDto> getPost(int page, int size, Long userId) {
-        User user = findUser(userId);
-        List<Follower> followerList = user.getFollower();
-        List<User> userList = new ArrayList<>();
-        for (Follower f : followerList) {
-            userList.add(f.getFollower());
-        }
-        userList.add(user);
+        List<User> userList = findMyFollower(userId);
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Post> posts = postRepository.findByUserInOrderByCreatedAtDesc(userList, pageable);
 
@@ -122,13 +134,7 @@ public class PostService {
 
     //수정일 기준으로 페이지네이션
     public Page<PostResponseDto> getPostByModifiedAt(int page, int size, Long userId) {
-        User user = findUser(userId);
-        List<Follower> followerList = user.getFollower();
-        List<User> userList = new ArrayList<>();
-        for (Follower f : followerList) {
-            userList.add(f.getFollower());
-        }
-        userList.add(user);
+        List<User> userList = findMyFollower(userId);
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Post> posts = postRepository.findByUserInOrderByModifiedAtDesc(userList, pageable);
 
@@ -137,13 +143,7 @@ public class PostService {
 
     //like 수대로 페이지네이션
     public Page<PostResponseDto> getPostByLike(int page, int size, Long userId) {
-        User user = findUser(userId);
-        List<Follower> followerList = user.getFollower();
-        List<User> userList = new ArrayList<>();
-        for (Follower f : followerList) {
-            userList.add(f.getFollower());
-        }
-        userList.add(user);
+        List<User> userList = findMyFollower(userId);
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Post> posts = postRepository.findByUserInOrderByLikesDesc(userList, pageable);
 
@@ -152,13 +152,7 @@ public class PostService {
 
     //날짜사이 게시물 검색
     public Page<PostResponseDto> getPostByTime(LocalDateTime startDate, LocalDateTime endDate, int page, int size, Long userId) {
-        User user = findUser(userId);
-        List<Follower> followerList = user.getFollower();
-        List<User> userList = new ArrayList<>();
-        for (Follower f : followerList) {
-            userList.add(f.getFollower());
-        }
-        userList.add(user);
+        List<User> userList = findMyFollower(userId);
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Post> posts = postRepository.findByCreatedAtBetween(startDate, endDate, pageable);
 
