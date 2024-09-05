@@ -37,7 +37,6 @@ public class ProfileService {
         }
 
         res.setEmail(search_user.getEmail());
-        res.setGender(search_user.getGender());
         res.setNickname(search_user.getNickname());
         res.setBio(search_user.getBio());
         res.setBirthday(search_user.getBirthday());
@@ -48,7 +47,6 @@ public class ProfileService {
     //프로필 수정
     @Transactional
     public ResponseUserDto updateprofile(Long userId, RequestUserDto requestDto) {
-        //현재 로그인 사용자와 수정할 프로필의 사용자가 다르다면 예외를 발생시켜야 한다. 아직은 인증, 인가 시스템이 구현되어있지 않았음
         User user = profileRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("올바른 요청이 아닙니다."));
         String editPassword = requestDto.getEditPassword();
         String input_password = requestDto.getInputPassword();
@@ -74,10 +72,12 @@ public class ProfileService {
             user.setPhoneNumber(requestDto.getPhoneNumber());
         if(requestDto.getEmail() != null)
             user.setEmail(requestDto.getEmail());
-        if(requestDto.getEmail() != null)
+        if(requestDto.getNickname() != null)
             user.setNickname(requestDto.getNickname());
         if(requestDto.getBio() != null)
             user.setBio(requestDto.getBio());
+        if(requestDto.getBirthday() != null)
+            user.setBirthday(requestDto.getBirthday());
         return new ResponseUserDto(user);
     }
 

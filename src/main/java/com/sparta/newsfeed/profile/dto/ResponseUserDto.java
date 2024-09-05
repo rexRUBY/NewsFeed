@@ -17,14 +17,16 @@ public class ResponseUserDto {
     private String name;
     private String phoneNumber;
     private String nickname;
-    private Gender gender;
     private String bio;
     private Date birthday;
 
-    public ResponseUserDto(User newUser) {
-        this.id = newUser.getId();
-        this.name = newUser.getName();
-        this.email = newUser.getEmail();
-        this.phoneNumber = newUser.getPhoneNumber();
+    public ResponseUserDto(User user) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.email = user.getEmail();
+        this.phoneNumber = user.getPhoneNumber();
+        this.nickname = user.getNickname();
+        this.bio = user.getBio();
+        this.birthday = user.getBirthday();
     }
 }
