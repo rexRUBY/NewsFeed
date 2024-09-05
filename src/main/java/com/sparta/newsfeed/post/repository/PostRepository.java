@@ -14,7 +14,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByUserInOrderByCreatedAtDesc(List<User> userList, Pageable pageable);
 
-    Page<Post> findByUserInOrderByLikesDesc(List<User> userList, Pageable pageable);
+    Page<Post> findByUserInOrderByLikesListDesc(List<User> userList, Pageable pageable);
 
     Page<Post> findByUserInOrderByModifiedAtDesc(List<User> userList, Pageable pageable);
 

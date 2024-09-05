@@ -147,7 +147,7 @@ public class PostService {
     public Page<PostResponseDto> getPostByLike(int page, int size, Long userId) {
         List<User> userList = findMyFollower(userId);
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Post> posts = postRepository.findByUserInOrderByLikesDesc(userList, pageable);
+        Page<Post> posts = postRepository.findByUserInOrderByLikesListDesc(userList, pageable);
 
         return posts.map(PostResponseDto::new);
     }
