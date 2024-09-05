@@ -27,5 +27,4 @@ public class ProfileController {
         Long userId = authUser.getId();
         return ResponseEntity.ok(profileService.updateprofile(userId,requestDto));
     }
-
 }
