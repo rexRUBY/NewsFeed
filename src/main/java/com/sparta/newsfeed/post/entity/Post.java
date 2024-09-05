@@ -26,8 +26,8 @@ public class Post extends Timestamped {
     @Column(name = "contents")
     private String contents;
 
-    @Column(name = "likes")
-    private Long likes;
+    /*@Column(name = "likes")
+    private Long likes = countLikes();*/
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likesList = new ArrayList<>();
@@ -39,11 +39,6 @@ public class Post extends Timestamped {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-
-    public Long countLikes() {
-        this.likes = (long) this.likesList.size();
-        return this.likes;
-    }
 
     public Post(String contents, String imgUrl, User user) {
         this.contents = contents;
