@@ -11,7 +11,8 @@
 이 프로젝트는 **사용자 편의성**을 우선으로 하며, **RESTful API** 기반의 설계를 통해 안정적이고 효율적인 데이터 통신을 지원합니다.
 
 ## 와이어프레임
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/7a15b403-dd00-4dd6-a6d9-73933b09a115/bc67b8eb-6733-429e-b9a9-78b4dad0ef1b/image.png)
+![image](https://github.com/user-attachments/assets/bb99439f-7f0f-4da3-8e56-a3b374ea3fe9)
+
 
 ## API 명세 
 | 기능               | 메서드   | 진행상황 | URL                                                | Request                                                                                      | Response                                                                                                                                                                                                                   | Status Code |
@@ -44,3 +45,4 @@
 | 친구 끊기            | DELETE | 완료     | /users/{userId}/followers/{followerId}              | `{"email": "test@sample.com"}`                                                               |                                                                                                                                                                                                                            | 200 OK      |
 
 ## ERD Diagram
+![image](https://github.com/user-attachments/assets/b1601214-5a86-41cd-8705-c34a4e4ecc08)
